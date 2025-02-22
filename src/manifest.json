@@ -48,11 +48,12 @@
     },
     /* 快应用特有相关 */
     "quickapp" : {},
-    /* 小程序特有相关 */
-    "mp-weixin" : {
-        "appid" : "",
+     /* 小程序特有相关 */
+     "mp-weixin" : {
+        "appid" : "wxade554dc7a71a36f",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "minified": true
         },
         "usingComponents" : true
     },

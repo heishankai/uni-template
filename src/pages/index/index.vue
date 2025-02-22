@@ -4,15 +4,28 @@
     <view class="text-area">
       <text class="title">{{ title }}</text>
     </view>
+    <!-- <custom-tab-bar /> -->
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-const title = ref('Hello')
+import CustomTabBar from '@/custom-tab-bar/index.vue'
+const title = ref('hello world')
+
+onShow(() => {
+  const curPages = getCurrentPages()[0];  // 获取当前页面实例  
+  if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
+    curPages.getTabBar().setData({
+      selected: 0
+    });
+  }
+})
+
+
+
 </script>
 
-<style>
+<style lang="scss" scoped>
 .content {
   display: flex;
   flex-direction: column;
