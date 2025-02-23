@@ -11,7 +11,7 @@ export default [
   ...tseslint.configs.recommended,
   ...pluginVue.configs['flat/essential'],
   { files: ['**/*.vue'], languageOptions: { parserOptions: { parser: tseslint.parser } } },
-  { ignores: ['dist/*','node_modules/*','build/*'] },
+  { ignores: ['dist/*', 'node_modules/*', 'build/*'] },
   {
     rules: {
       // 'no-undef': 'off',
@@ -36,9 +36,5 @@ export default [
         // 全局自动导入
       },
     },
-  },
-  // 添加 Prettier 插件
-  {
-    extends: ['plugin:prettier/recommended'],
   },
 ]
