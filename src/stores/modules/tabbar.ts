@@ -9,7 +9,7 @@ export const useTabbarStore = defineStore(
     const tableSelected = ref<number>(0)
 
     // 保存会员信息，登录时使用
-    const setSelected = (val: any) => {
+    const setSelected = (val: number) => {
       tableSelected.value = val
     }
 

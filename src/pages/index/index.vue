@@ -12,11 +12,13 @@
 </template>
 
 <script setup lang="ts">
-import CustomTabBar from '@/custom-tab-bar/index.vue'
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
+// import CustomTabBar from '@/custom-tab-bar/index.vue'
 const title = ref('hello world')
 
 onShow(() => {
-  const curPages = getCurrentPages()[0];  // 获取当前页面实例  
+  // const curPages = getCurrentPages()[0];  // 获取当前页面实例
   // if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
   //   curPages.getTabBar().setData({
   //     selected: 0
