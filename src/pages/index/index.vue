@@ -4,7 +4,7 @@
     <view class="text-area">
       <text class="title">{{ title }}</text>
     </view>
-    <uni-card>
+    <uni-card @click="handleClick('你好，世界')">
       <text>这是一个基础卡片示例，内容较少，此示例展示了一个没有任何属性不带阴影的卡片。</text>
     </uni-card>
     <!-- <custom-tab-bar /> -->
@@ -12,17 +12,21 @@
 </template>
 
 <script setup lang="ts">
-// import { ref } from 'vue'
+import { ref } from 'vue'
 // import { onShow } from '@dcloudio/uni-app'
-// const title = ref('hello world')
+const title = ref<string>('hello world')
+
+const handleClick = (value): void => {
+  title.value = value
+}
 
 // onShow(() => {
-  // const curPages = getCurrentPages()[0];  // 获取当前页面实例
-  // if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
-  //   curPages.getTabBar().setData({
-  //     selected: 0
-  //   });
-  // }
+// const curPages = getCurrentPages()[0];  // 获取当前页面实例
+// if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
+//   curPages.getTabBar().setData({
+//     selected: 0
+//   });
+// }
 // })
 
 

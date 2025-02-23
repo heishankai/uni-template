@@ -42,10 +42,10 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-  "**/*.{vue,js,ts,jsx,tsx}": [
-    "eslint --fix"
-  ]
-},
+    "**/*.{vue,js,ts,jsx,tsx}": [
+      "eslint --fix"
+    ]
+  },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4030620241128001",
     "@dcloudio/uni-app-harmony": "3.0.0-4030620241128001",
@@ -78,6 +78,8 @@
     "@dcloudio/vite-plugin-uni": "3.0.0-4030620241128001",
     "@eslint/js": "^9.21.0",
     "@types/wechat-miniprogram": "^3.4.8",
+    "@typescript-eslint/eslint-plugin": "^8.24.1",
+    "@typescript-eslint/parser": "^8.24.1",
     "@uni-helper/uni-app-types": "1.0.0-alpha.6",
     "@uni-helper/uni-ui-types": "1.0.0-alpha.6",
     "@vue/runtime-core": "^3.4.21",

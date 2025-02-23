@@ -26,6 +26,8 @@ specifiers:
   '@dcloudio/vite-plugin-uni': 3.0.0-4030620241128001
   '@eslint/js': ^9.21.0
   '@types/wechat-miniprogram': ^3.4.8
+  '@typescript-eslint/eslint-plugin': ^8.24.1
+  '@typescript-eslint/parser': ^8.24.1
   '@uni-helper/uni-app-types': 1.0.0-alpha.6
   '@uni-helper/uni-ui-types': 1.0.0-alpha.6
   '@vue/runtime-core': ^3.4.21
@@ -82,6 +84,8 @@ devDependencies:
   '@dcloudio/vite-plugin-uni': 3.0.0-4030620241128001_vite@5.2.8+vue@3.5.13
   '@eslint/js': 9.21.0
   '@types/wechat-miniprogram': 3.4.8
+  '@typescript-eslint/eslint-plugin': 8.24.1_wzkfs7a6e5zbkthjpwnlfnbngi
+  '@typescript-eslint/parser': 8.24.1_u4itksw7bvplblt45ipp7hemxm
   '@uni-helper/uni-app-types': 1.0.0-alpha.6_6ojp7pwvafskey22aliwdxkyey
   '@uni-helper/uni-ui-types': 1.0.0-alpha.6_zrfhpvn7l2xrv5pqxwiegklwvu
   '@vue/runtime-core': 3.5.13
