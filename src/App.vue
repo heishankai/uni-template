@@ -10,6 +10,7 @@ onHide(() => {
 });
 </script>
 <style>
+/* 全局背景色 */
 page {
   background-color: #f5f5f5;
 }
