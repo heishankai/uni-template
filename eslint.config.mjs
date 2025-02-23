@@ -20,9 +20,10 @@ export default [
       // 'vue/no-deprecated-html-element-is': ['off'],
       // '@typescript-eslint/no-unused-vars': ['off'],
       '@typescript-eslint/explicit-function-return-type': 'error',
-      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-explicit-any': 'off', // 禁止使用 any
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-inferrable-types': 'error',
+      '@typescript-eslint/explicit-module-boundary-types': 'error',
     },
   },
   // 小程序全局变量

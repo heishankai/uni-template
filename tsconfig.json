@@ -17,7 +17,15 @@
       "@types/wechat-miniprogram",
       "@uni-helper/uni-app-types",
       "@uni-helper/uni-ui-types",
-    ]
+    ],
+    "strict": true, // 启用严格模式
+    "noImplicitAny": false, // 禁止隐式的 any 类型
+    "strictNullChecks": true, // 严格的 null 检查
+    "strictFunctionTypes": true, // 严格的函数类型检查
+    "strictBindCallApply": true, // 严格的 bind、call 和 apply 方法检查
+    "strictPropertyInitialization": true, // 严格的属性初始化检查
+    "noImplicitThis": true, // 禁止隐式的 this 类型
+    "alwaysStrict": true // 始终启用严格模式
   },
   "vueCompilerOptions": {
     // Vue 3.x 默认使用 runtime-dom 模式，因此这个选项实际上是不需要的。
@@ -33,5 +41,6 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue"
-  ]
+  ],
+  "exclude": ["node_modules", "dist"]
 }

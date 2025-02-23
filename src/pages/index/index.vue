@@ -16,9 +16,10 @@ import { ref } from 'vue'
 // import { onShow } from '@dcloudio/uni-app'
 const title = ref<string>('hello world')
 
-const handleClick = (value): void => {
+const handleClick = (value): string => {
   title.value = value
 }
+
 
 // onShow(() => {
 // const curPages = getCurrentPages()[0];  // 获取当前页面实例
