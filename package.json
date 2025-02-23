@@ -43,9 +43,8 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{js,ts,vue,jsx,tsx}": [
-      "eslint --cache --fix",
-      "git add"
+    "*.{js,ts,vue}": [
+      "eslint --fix"
     ]
   },
   "dependencies": {
