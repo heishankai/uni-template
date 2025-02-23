@@ -4,7 +4,7 @@
     <view class="text-area">
       <text class="title">{{ title }}</text>
     </view>
-    <uni-card @click="handleClick(12121)">
+    <uni-card @click="handleClick('你好 世界')">
       <text>这是一个基础卡片示例，内容较少，此示例展示了一个没有任何属性不带阴影的卡片。</text>
     </uni-card>
     <!-- <custom-tab-bar /> -->
@@ -16,7 +16,7 @@ import { ref } from 'vue'
 // import { onShow } from '@dcloudio/uni-app'
 const title = ref<string>('hello world')
 
-const handleClick = (value): string => {
+const handleClick = (value): void => {
   title.value = value
 }
 
