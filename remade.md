@@ -1,2 +1,0 @@
-- 启动 ：pnpm dev:mp-weixin
-- 打包 ：pnpm build:mp-weixin
