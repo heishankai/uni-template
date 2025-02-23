@@ -17,11 +17,11 @@ const title = ref('hello world')
 
 onShow(() => {
   const curPages = getCurrentPages()[0];  // 获取当前页面实例  
-  if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
-    curPages.getTabBar().setData({
-      selected: 0
-    });
-  }
+  // if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
+  //   curPages.getTabBar().setData({
+  //     selected: 0
+  //   });
+  // }
 })
 
 

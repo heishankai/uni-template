@@ -9,7 +9,7 @@ export default defineConfig({
     uni(),
     AutoImport({
       imports: ['vue', 'uni-app', 'pinia'],
-      dts: true,
+      dts: 'src/auto-imports.d.ts', // 可选：生成自动导入的类型定义文件
     }),
   ],
 })
