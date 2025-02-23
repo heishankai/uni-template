@@ -13,9 +13,9 @@
       "dom"
     ],
     "types": [
-      "@dcloudio/types",
-      "@types/wechat-miniprogram",
-      // "@uni-helper/uni-app-types"
+      // "@dcloudio/types",
+      // "@types/wechat-miniprogram",
+      "@uni-helper/uni-app-types"
     ]
   },
   "vueCompilerOptions": {
