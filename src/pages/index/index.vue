@@ -14,7 +14,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 // import { onShow } from '@dcloudio/uni-app'
-// import CustomTabBar from '@/custom-tab-bar/index.vue'
 // const title = ref('hello world')
 
 onShow(() => {
