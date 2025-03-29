@@ -1,17 +1,42 @@
 <script setup lang="ts">
-// onLaunch(() => {
-//   console.log("App Launch");
-// });
+import { onLaunch, onShow, onHide, onLoad, onUnload, onReady } from '@dcloudio/uni-app'
+onLaunch(() => {
+  console.log('监听小程序初始化，全局只触发一次')
+})
 // onShow(() => {
-//   console.log("App Show");
-// });
+//   console.log('监听小程序启动或切前台')
+// })
 // onHide(() => {
-//   console.log("App Hide");
-// });
+//   console.log('监听小程序切后台')
+// })
+
+onShow(() => {
+  console.log('监听页面展示')
+})
+
+onLoad(() => {
+  console.log('监听页面加载，可以发送请求')
+})
+
+onReady(() => {
+  console.log('监听页面DOM渲染完成')
+})
+
+onHide(() => {
+  console.log('监听页面隐藏')
+})
+
+onUnload(() => {
+  console.log('监听页面卸载')
+})
 </script>
 <style>
+@import '@/static/iconfont.css';
 /* 全局背景色 */
 page {
-  background-color: #f5f5f5;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
 }
 </style>

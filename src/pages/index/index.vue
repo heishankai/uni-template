@@ -1,54 +1,57 @@
 <template>
-  <view class="content">
-    <view class="text-area">
-      <text class="title">{{ title }}</text>
-    </view>
-    <uni-card @click="handleClick(title === 'hello world' ? '你好 世界' : 'hello world')">
-      <text>这是一个基础卡片示例，内容较少，此示例展示了一个没有任何属性不带阴影的卡片。</text>
-    </uni-card>
-    <!-- <custom-tab-bar /> -->
+  <view class="container">
+    <search-navbar />
+    <scroll-view class="scroll-view" scroll-y>
+      <template>
+        <story-list />
+      </template>
+    </scroll-view>
+    <tabbar selected="0"></tabbar>
+    <custom-popup ref="subscribeModalRef" />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-// import { onShow } from '@dcloudio/uni-app'
-const title = ref<string>('hello world')
+import { onShow, onHide } from '@dcloudio/uni-app'
+// components
+import tabbar from '@/components/custom-tab-bar.vue'
+import searchNavbar from './components/search-navbar.vue'
+import customPopup from './components/custom-popup.vue'
+import storyList from './components/story-list.vue'
 
-const handleClick = (value): void => {
-  title.value = value
+const subscribeModalRef = ref()
+
+const handleSubscribe = (): void => {
+  subscribeModalRef.value.subscribeModalOpen.open()
 }
 
+onShow(() => {
+  setTimeout(() => {
+    handleSubscribe()
+  }, 1000)
+})
 
-// onShow(() => {
-// const curPages = getCurrentPages()[0];  // 获取当前页面实例
-// if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
-//   curPages.getTabBar().setData({
-//     selected: 0
-//   });
-// }
-// })
-
-
-
+onHide(() => {
+  console.log('监听页面隐藏')
+})
 </script>
 
-<style lang="scss" scoped>
-.content {
+<style lang="scss">
+page {
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #f0faf9, #b3e5dc, #b3e5dc);
+}
+
+.container {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
+.scroll-view {
+  flex: 1;
+  overflow: hidden;
 }
 </style>
