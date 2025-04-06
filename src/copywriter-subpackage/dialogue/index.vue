@@ -10,7 +10,7 @@
     </scroll-view>
     <view class="search">
       <view class="search-input">
-        <input v-model="searchValue" placeholder="发送我的消息" />
+        <input v-model="searchValue" placeholder="发送我的消息" :cursor-spacing="100" />
         <button @click="handleSend">
           <uni-icons type="paperplane" color="#00cec9" size="24" />
         </button>

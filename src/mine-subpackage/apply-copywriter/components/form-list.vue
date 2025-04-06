@@ -16,7 +16,7 @@
       </view>
       <view class="form-item">
         <text>昵称</text>
-        <input type="text" placeholder="请填写昵称" v-model="profile.name" />
+        <input type="text" placeholder="请填写昵称" v-model="profile.username" />
       </view>
       <view class="form-item">
         <text>年龄</text>
@@ -52,7 +52,7 @@
         <text>专业</text>
         <picker :value="profile.specialtyIndex" :range="specialty" @change="onPickerChange">
           <view v-if="profile.specialtyIndex">{{ specialty[profile.specialtyIndex] }}</view>
-          <view v-else-if="profile.specialtyIndex === undefined" class="placeholder"
+          <view v-else-if="profile.specialtyIndex === null" class="placeholder"
             >请选择专业</view
           >
         </picker>
@@ -61,14 +61,14 @@
         <text>职业</text>
         <picker :value="profile.jobIndex" :range="jobList" @change="handleJobChange">
           <view v-if="profile.jobIndex">{{ jobList[profile.jobIndex] }}</view>
-          <view v-else-if="profile.jobIndex === undefined" class="placeholder">请选择职业</view>
+          <view v-else-if="profile.jobIndex === null" class="placeholder">请选择职业</view>
         </picker>
       </view>
       <view class="form-item">
         <text>爱好</text>
         <picker :value="profile.hobbyIndex" :range="hobbyList" @change="handleHobbyChange">
           <view v-if="profile.hobbyIndex">{{ hobbyList[profile.hobbyIndex] }}</view>
-          <view v-else-if="profile.hobbyIndex === undefined" class="placeholder">请选择爱好</view>
+          <view v-else-if="profile.hobbyIndex === null" class="placeholder">请选择爱好</view>
         </picker>
       </view>
       <view class="form-item">
@@ -116,19 +116,19 @@ const profile = ref({
   // 头像
   avatar: 'https://img.yzcdn.cn/vant/cat.jpeg',
   // 昵称
-  name: '张三',
+  username: '张三',
   // 稿龄
   straw: 3,
   // 年龄
   age: 18,
   // 性别
-  gender: '男',
+  gender: '男', // 0 男 1 女
   // 专业选择
-  specialtyIndex: undefined,
+  specialtyIndex: null,
   // 职业选择
-  jobIndex: undefined,
+  jobIndex: null,
   // 爱好
-  hobbyIndex: undefined,
+  hobbyIndex: null,
   // 简介
   synopsis: '',
   // 生日

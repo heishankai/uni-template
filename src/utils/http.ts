@@ -1,10 +1,8 @@
-import { useMemberStore } from '@/stores'
-
 const BASEURL = 'https://pcapi-xiaotuxian-front-devtest.itheima.net'
 
 // 添加请求拦截器
 const httpInterceptor = {
-  invoke(options: UniApp.RequestOptions) {
+  invoke(options: UniApp.RequestOptions): UniApp.RequestOptions {
     console.log(options, 'options?.url')
 
     // 1. 非 http 开头时需要拼接完整路径
@@ -21,12 +19,12 @@ const httpInterceptor = {
     }
 
     // 4. 添加token
-    const memberStore = useMemberStore()
-    const token = memberStore.profile?.token
+    // const memberStore = useMemberStore()
+    // const token = memberStore.profile?.token
 
-    if (token) {
-      options.header.Authorization = token
-    }
+    // if (token) {
+    //   options.header.Authorization = token
+    // }
     console.log(options, 'options')
 
     return options
@@ -55,7 +53,7 @@ type Data<T> = {
   msg: string
   result: T
 }
-export const http = <T>(options: UniApp.RequestOptions) => {
+export const http = <T>(options: UniApp.RequestOptions): Promise<Data<T>> => {
   // 1. 返回 Promise 对象
   return new Promise<Data<T>>((resolve, reject) => {
     uni.request({
@@ -67,8 +65,8 @@ export const http = <T>(options: UniApp.RequestOptions) => {
           resolve(res.data as Data<T>)
         } else if (res.statusCode === 401) {
           // 401错误  -> 清理用户信息，跳转到登录页
-          const memberStore = useMemberStore()
-          memberStore.clearProfile()
+          // const memberStore = useMemberStore()
+          // memberStore.clearProfile()
           uni.navigateTo({ url: '/pages/login/login' })
           reject(res)
         } else {

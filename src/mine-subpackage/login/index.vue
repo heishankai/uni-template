@@ -1,18 +1,26 @@
 <template>
   <view class="container">
     <scroll-view class="scroll-view" scroll-y>
-      <template> 11 </template>
+      <template>
+        <button :disabled="false" hover-class="button-hover" @click="handleLogin">登录</button>
+      </template>
     </scroll-view>
   </view>
 </template>
 
 <script setup lang="ts">
-// import { ref } from 'vue'
 import { onShow, onHide } from '@dcloudio/uni-app'
+import { useOpenidStore } from '@/stores'
+const openIDStore = useOpenidStore()
+
+const handleLogin = (): void => {
+  console.log(openIDStore.openid, 'openid')
+}
 
 onShow(() => {
   console.log('页面显示')
 })
+
 onHide(() => {
   console.log('监听页面隐藏')
 })

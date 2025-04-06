@@ -22,14 +22,12 @@ import storyList from './components/story-list.vue'
 
 const subscribeModalRef = ref()
 
-const handleSubscribe = (): void => {
-  subscribeModalRef.value.subscribeModalOpen.open()
-}
+// const handleSubscribe = (): void => {
+//   subscribeModalRef.value.subscribeModalOpen.open()
+// }
 
 onShow(() => {
-  setTimeout(() => {
-    handleSubscribe()
-  }, 1000)
+  // handleSubscribe()
 })
 
 onHide(() => {
