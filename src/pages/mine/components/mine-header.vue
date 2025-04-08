@@ -1,9 +1,9 @@
 <template>
   <view class="header-container">
-    <view class="show-info" v-if="userInfo?.user_token">
-      <image class="avatar" :src="userInfo?.avatar" mode="scaleToFill" />
+    <view class="show-info" v-if="profile.user_token">
+      <image class="avatar" :src="profile.avatar" mode="scaleToFill" />
       <view class="data" @click="handelePersonal">
-        <view class="name">{{ userInfo?.nickname }}</view>
+        <view class="name">{{ profile.nickname }}</view>
         <view class="hint">修改个人信息</view>
       </view>
     </view>
@@ -16,9 +16,19 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 // store
 import { useUserInfoStore } from '@/stores'
-const { userInfo } = useUserInfoStore()
+
+const profile = ref({
+  // 头像
+  avatar: '',
+  // 昵称
+  nickname: '',
+  // tolen
+  user_token: '',
+})
 
 const handeleLogin = (): void => {
   uni.vibrateShort()
@@ -33,6 +43,11 @@ const handelePersonal = (): void => {
     url: '/mine-subpackage/personal-data/index',
   })
 }
+
+onShow(() => {
+  const { userInfo } = useUserInfoStore()
+  profile.value = { ...userInfo }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -64,7 +79,7 @@ const handelePersonal = (): void => {
     }
 
     .data {
-      daisplay: flex;
+      display: flex;
       justify-content: space-between;
       align-items: center;
       margin-left: 24rpx;
