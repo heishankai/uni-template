@@ -39,6 +39,7 @@ specifiers:
   eslint-plugin-vue: ^9.32.0
   globals: ^16.0.0
   husky: '6'
+  js-base64: ^3.7.7
   lint-staged: ^15.4.3
   pinia: 2.0.27
   pinia-plugin-persistedstate: 3.2.0
@@ -69,6 +70,7 @@ dependencies:
   '@dcloudio/uni-mp-xhs': 3.0.0-4030620241128001_vue@3.5.13
   '@dcloudio/uni-quickapp-webview': 3.0.0-4030620241128001_vue@3.5.13
   '@dcloudio/uni-ui': 1.5.7
+  js-base64: 3.7.7
   pinia: 2.0.27_6ojp7pwvafskey22aliwdxkyey
   pinia-plugin-persistedstate: 3.2.0_pinia@2.0.27
   vue: 3.5.13_typescript@4.9.5
@@ -5032,6 +5034,10 @@ packages:
 
   /jpeg-js/0.3.7:
     resolution: {integrity: sha512-9IXdWudL61npZjvLuVe/ktHiA41iE8qFyLB+4VDTblEsWBzeg8WQTlktdUK4CdncUqtUgUg0bbOmTE2bKBKaBQ==}
+    dev: false
+
+  /js-base64/3.7.7:
+    resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
     dev: false
 
   /js-tokens/4.0.0:

@@ -1,17 +1,8 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide, onLoad, onUnload, onReady } from '@dcloudio/uni-app'
-import { useOpenidStore } from '@/stores'
-const openIDStore = useOpenidStore()
 
 onLaunch(() => {
   console.log('监听小程序初始化，全局只触发一次')
-  uni.login({
-    success(res) {
-      // 用户登录凭证（有效期五分钟）
-      const { code } = res ?? {}
-      openIDStore.setOpenid(code)
-    },
-  })
 })
 
 onShow(() => {

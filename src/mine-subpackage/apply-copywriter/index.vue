@@ -27,10 +27,10 @@ import { ref } from 'vue'
 import formList from './components/form-list.vue'
 import rateBar from './components/rate-bar.vue'
 // utils
-import { requiredFields, isEmpty } from './utils.ts'
+import { requiredFields, isEmpty } from './utils'
 
 const rate = ref(1)
-const formlistRef = ref(null)
+const formlistRef = ref<any>(null)
 
 // 上一步
 const lastStep = (): void => {
@@ -82,18 +82,18 @@ page {
 
 .footer {
   margin-bottom: env(safe-area-inset-bottom);
-  position: relative; // 让子元素使用绝对定位
+  position: relative;
   height: 50px;
 
   .last {
     position: absolute;
-    left: 30px; // 固定在左侧
+    left: 30px;
   }
 
   .next,
   .submit {
     position: absolute;
-    right: 30px; // 固定在右侧
+    right: 30px;
   }
 
   .submit,

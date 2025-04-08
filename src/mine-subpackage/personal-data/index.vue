@@ -5,100 +5,166 @@
       <template>
         <view
           class="avatar"
-          @click="onAvatarChange"
+          @click="handleAvatarChange"
           :style="{
             background: `url(${profile?.avatar}) no-repeat center center`,
             backgroundSize: 'cover',
             boxShadow: '0px 7px 14px 0px rgba(0, 0, 0, 0.25)',
           }"
         >
+          <view class="camera">
+            <uni-icons type="camera" size="26" color="#FFFFFF" />
+          </view>
         </view>
         <view class="form">
           <view class="form-item">
             <text>昵称</text>
-            <input disabled type="text" placeholder="请填写昵称" v-model="profile.name" />
+            <input type="text" placeholder="请填写昵称" v-model="profile.nickname" />
           </view>
           <view class="form-item">
-            <text>性别</text>
-            <input disabled type="text" placeholder="请填写昵称" v-model="profile.gender" />
+            <text>年龄</text>
+            <input type="number" placeholder="请填写年龄" v-model.number="profile.age" />
           </view>
           <view class="form-item">
             <text>手机号</text>
-            <input disabled type="text" placeholder="请填写昵称" v-model="profile.phone" />
+            <input type="number" placeholder="请填写手机号码" v-model.number="profile.phone" />
           </view>
           <view class="form-item">
-            <text>出生日期</text>
-            <input disabled type="text" placeholder="请填写昵称" v-model="profile.birthday" />
+            <text>性别</text>
+            <radio-group @change="onGenderChange">
+              <label class="radio" v-for="item in genderList" :key="item.value">
+                <radio
+                  :value="item.value"
+                  color="#00cec9"
+                  :checked="profile?.gender === item.value"
+                />
+                <text>{{ item.name }}</text>
+              </label>
+            </radio-group>
+          </view>
+          <view class="form-item">
+            <text>城市</text>
+            <input
+              @click="handleGetCity"
+              disabled
+              type="text"
+              placeholder="点击授权获取城市"
+              v-model="profile.city"
+            />
           </view>
         </view>
       </template>
     </scroll-view>
-    <button @click="onSubmit">退出登录</button>
+    <button @click="onSubmit">保存</button>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+// services
+import { updateUserInfoService } from './service'
+import { uploadFileUrl } from '@/utils/request'
+// utils
+import { genderList } from './utils'
+// store
+import { useUserInfoStore } from '@/stores'
+const { userInfo, set } = useUserInfoStore()
 
 const profile = ref({
   // 头像
-  avatar: 'https://img.yzcdn.cn/vant/cat.jpeg',
+  avatar: '',
   // 昵称
-  name: '陈淑雅',
-  // 手机号
-  phone: '18667****23',
+  nickname: '',
   // 性别
-  gender: '女',
-  // 生日
-  birthday: '1997-12-23',
+  gender: null,
+  // 年龄
+  age: null,
+  // 手机号
+  phone: null,
+  // 城市
+  city: '',
 })
 
-// 退出登录
+// 保存修改
 const onSubmit = async (): Promise<void> => {
-  // 如果所有必填项都已填写，则执行保存操作
-  console.log(profile, 'values')
-  // 这里可以添加保存数据到服务器的逻辑
+  uni.showLoading({ title: '加载中', mask: true })
+
+  const { data, message } = await updateUserInfoService({
+    ...profile.value,
+    openid: userInfo.openid,
+  })
+
+  if (message !== 'success') {
+    uni.showToast({ title: message, icon: 'none' })
+    uni.hideLoading()
+    return
+  }
+
+  profile.value = data
+  set(data)
+  uni.hideLoading()
+  uni.showToast({ title: '保存成功', icon: 'none' })
+  uni.navigateBack({ delta: 1 })
 }
 
-// 上传头像 -  uni.chooseMedia 仅支持微信小程序端
-const onAvatarChange = (): void => {
+// 性别选择
+const onGenderChange = (e: any): void => {
+  console.log(e.detail.value)
+  profile.value.gender = e.detail.value
+}
+
+// 上传头像 - 仅支持微信小程序端
+const handleAvatarChange = (): void => {
   uni.chooseMedia({
     // 文件个数
     count: 1,
     // 文件类型
     mediaType: ['image'],
     success: (res) => {
-      // 本地路径
-      const { tempFilePath } = res.tempFiles[0]
-      // 上传
-      uploadFile(tempFilePath)
+      uni.uploadFile({
+        url: uploadFileUrl,
+        name: 'file',
+        filePath: res.tempFiles?.[0]?.tempFilePath,
+        success: (uploadRes) => {
+          const { data } = JSON.parse(uploadRes.data)
+          profile.value.avatar = data
+        },
+        fail: () => {
+          uni.showToast({ title: '上传失败', icon: 'none' })
+        },
+      })
+    },
+    fail: () => {
+      uni.showToast({ title: '上传失败', icon: 'none' })
     },
   })
 }
 
-// 文件上传-兼容小程序端、H5端、App端
-const uploadFile = (file: string): void => {
-  console.log(file, 'file')
-
-  // 文件上传
-  uni.uploadFile({
-    url: '/member/profile/avatar',
-    name: 'file',
-    filePath: file,
-    success: (res) => {
-      if (res.statusCode === 200) {
-        const avatar = JSON.parse(res.data).result.avatar
-        // 个人信息页数据更新
-        profile.value.avatar = avatar
-        // 本地 Store头像更新
-        // memberStore.profile!.avatar = avatar
-        uni.showToast({ icon: 'success', title: '更新成功' })
-      } else {
-        uni.showToast({ icon: 'error', title: '出现错误' })
-      }
+// 获取城市
+const handleGetCity = (): void => {
+  uni.authorize({
+    scope: 'scope.userLocation',
+    success: () => {
+      uni.getLocation({
+        type: 'wgs84',
+        success: (res) => {
+          console.log('res', res)
+          // rangeQuery(res.latitude, res.longitude)
+        },
+        fail: (err) => {
+          console.log(err)
+          // locationHint()
+        },
+      })
     },
   })
 }
+
+onLoad(() => {
+  const { userInfo } = useUserInfoStore()
+  profile.value = { ...userInfo }
+})
 </script>
 
 <style lang="scss">
@@ -140,6 +206,20 @@ page {
     width: 120px;
     height: 120px;
     border-radius: 50%;
+    position: relative;
+
+    .camera {
+      position: absolute;
+      bottom: 8rpx;
+      right: 8rpx;
+      background-color: $uni-bg-color;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   // 表单
@@ -170,6 +250,16 @@ page {
       text {
         width: 180rpx;
         color: $uni-text-color-black;
+      }
+
+      radio-group {
+        font-family: Gilroy;
+        font-size: 18px;
+        color: $uni-text-color-placeholder;
+
+        .radio {
+          margin-right: 24rpx;
+        }
       }
     }
   }

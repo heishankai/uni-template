@@ -47,7 +47,7 @@
 import { onMounted, ref } from 'vue'
 import type { HomeGoodsGuessLikeData } from '../types'
 // services
-import { getHomeGoodsGuessLikeAPI } from '../service'
+// import { getHomeGoodsGuessLikeAPI } from '../service'
 
 const pageParams: HomeGoodsGuessLikeData = {
   categoryId: 0,
@@ -64,18 +64,18 @@ const getHomeGoodsGuessLikeData = async (): Promise<void> => {
   if (finish.value === true) {
     return uni.showToast({ icon: 'none', title: '没有更多数据~' })
   }
-  const { result }: any = await getHomeGoodsGuessLikeAPI(pageParams)
-  console.log(result?.items, 'result')
+  // const { result }: any = await getHomeGoodsGuessLikeAPI(pageParams)
+  // console.log(result?.items, 'result')
 
-  // 数组追加
-  guessList.value.push(...result.items)
-  // 分页条件
-  if (pageParams?.page < result?.pages) {
-    // 页码累加
-    pageParams.page++
-  } else {
-    finish.value = true
-  }
+  // // 数组追加
+  // guessList.value.push(...result.items)
+  // // 分页条件
+  // if (pageParams?.page < result?.pages) {
+  //   // 页码累加
+  //   pageParams.page++
+  // } else {
+  //   finish.value = true
+  // }
 }
 
 // 重置数据

@@ -52,9 +52,7 @@
         <text>专业</text>
         <picker :value="profile.specialtyIndex" :range="specialty" @change="onPickerChange">
           <view v-if="profile.specialtyIndex">{{ specialty[profile.specialtyIndex] }}</view>
-          <view v-else-if="profile.specialtyIndex === null" class="placeholder"
-            >请选择专业</view
-          >
+          <view v-else-if="profile.specialtyIndex === null" class="placeholder">请选择专业</view>
         </picker>
       </view>
       <view class="form-item">

@@ -2,27 +2,25 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 // 定义 Store
-export const useOpenidStore = defineStore(
-  'openid',
+export const useUserInfoStore = defineStore(
+  'userInfo',
   () => {
-    // 会员信息
-    const openid = ref<string>('')
+    const userInfo = ref<any>({})
 
-    // 保存会员信息，登录时使用
-    const setOpenid = (val: string): void => {
-      openid.value = val
+    // 保存
+    const set = (val: string): void => {
+      userInfo.value = val
     }
 
-    // 清理会员信息，退出时使用
-    const clearOpenid = (): void => {
-      openid.value = ''
+    // 清理
+    const clear = (): void => {
+      userInfo.value = {}
     }
 
-    // 记得 return
     return {
-      openid,
-      setOpenid,
-      clearOpenid,
+      userInfo,
+      set,
+      clear,
     }
   },
   // TODO: 持久化

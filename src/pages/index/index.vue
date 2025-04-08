@@ -13,7 +13,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onShow, onHide } from '@dcloudio/uni-app'
+import { onLoad } from '@dcloudio/uni-app'
+// services
+import { getHomeGetRecommendService } from './service'
+
 // components
 import tabbar from '@/components/custom-tab-bar.vue'
 import searchNavbar from './components/search-navbar.vue'
@@ -22,16 +25,18 @@ import storyList from './components/story-list.vue'
 
 const subscribeModalRef = ref()
 
+// 获取推荐轮博数据
+const getHomeGetRecommendData = async (): Promise<void> => {
+  const res = await getHomeGetRecommendService()
+  console.log('获取推荐轮博数据', res)
+}
+
 // const handleSubscribe = (): void => {
 //   subscribeModalRef.value.subscribeModalOpen.open()
 // }
 
-onShow(() => {
-  // handleSubscribe()
-})
-
-onHide(() => {
-  console.log('监听页面隐藏')
+onLoad(() => {
+  getHomeGetRecommendData()
 })
 </script>
 
