@@ -1,9 +1,9 @@
 <template>
   <view class="header-container">
-    <view class="show-info" v-if="userInfoStore.userInfo.user_token">
-      <image class="avatar" :src="userInfoStore.userInfo.avatar" mode="scaleToFill" />
+    <view class="show-info" v-if="userInfo?.user_token">
+      <image class="avatar" :src="userInfo?.avatar" mode="scaleToFill" />
       <view class="data" @click="handelePersonal">
-        <view class="name">{{ userInfoStore.userInfo.nickname }}</view>
+        <view class="name">{{ userInfo?.nickname }}</view>
         <view class="hint">修改个人信息</view>
       </view>
     </view>
@@ -18,7 +18,7 @@
 <script setup lang="ts">
 // store
 import { useUserInfoStore } from '@/stores'
-const userInfoStore = useUserInfoStore()
+const { userInfo } = useUserInfoStore()
 
 const handeleLogin = (): void => {
   uni.vibrateShort()

@@ -190,9 +190,9 @@ page {
     background-color: $uni-bg-color;
     margin-bottom: env(safe-area-inset-bottom);
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    // 移除默认边框
+
     &::after {
-      border: none; // 确保没有边框
+      border: none;
     }
   }
 }
