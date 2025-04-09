@@ -16,31 +16,41 @@
       </view>
       <view class="form-item">
         <text>昵称</text>
-        <input type="text" placeholder="请填写昵称" v-model="profile.username" />
+        <input type="text" placeholder="请填写昵称" v-model="profile.nickname" />
       </view>
       <view class="form-item">
         <text>年龄</text>
-        <input type="digit" placeholder="请填写稿龄" v-model="profile.age" />
+        <input type="digit" placeholder="请填写年龄" v-model.number="profile.age" />
       </view>
       <view class="form-item">
-        <text>稿龄</text>
-        <input type="digit" placeholder="请填写稿龄" v-model="profile.straw" />
+        <text>城市</text>
+        <input
+          @click="handleGetCity"
+          disabled
+          type="text"
+          placeholder="点击授权获取城市"
+          v-model="profile.city"
+        />
+      </view>
+      <view class="form-item">
+        <text>手机号</text>
+        <input type="digit" placeholder="请填写手机号码" v-model.number="profile.phone" />
       </view>
       <view class="form-item">
         <text>性别</text>
         <radio-group @change="onGenderChange">
-          <label class="radio">
-            <radio value="男" color="#00cec9" :checked="profile?.gender === '男'" />
-            男
-          </label>
-          <label class="radio">
-            <radio value="女" color="#00cec9" :checked="profile?.gender === '女'" />
-            女
+          <label class="radio" v-for="item in genderList" :key="item.value">
+            <radio :value="item.value" color="#00cec9" :checked="profile?.gender === item.value" />
+            <text>{{ item.name }}</text>
           </label>
         </radio-group>
       </view>
     </view>
     <view v-show="rate === 2">
+      <view class="form-item">
+        <text>稿龄</text>
+        <input type="digit" placeholder="请填写稿龄" v-model.number="profile.straw" />
+      </view>
       <view class="form-item">
         <text>生日</text>
         <picker :value="profile.birthday" mode="date" @change="handleBirthdayChange">
@@ -50,23 +60,23 @@
       </view>
       <view class="form-item">
         <text>专业</text>
-        <picker :value="profile.specialtyIndex" :range="specialty" @change="onPickerChange">
-          <view v-if="profile.specialtyIndex">{{ specialty[profile.specialtyIndex] }}</view>
-          <view v-else-if="profile.specialtyIndex === null" class="placeholder">请选择专业</view>
+        <picker :value="profile.specialty" :range="specialtyList" @change="onPickerChange">
+          <view v-if="profile.specialty">{{ specialtyList[profile.specialty] }}</view>
+          <view v-else-if="profile.specialty === null" class="placeholder">请选择专业</view>
         </picker>
       </view>
       <view class="form-item">
         <text>职业</text>
-        <picker :value="profile.jobIndex" :range="jobList" @change="handleJobChange">
-          <view v-if="profile.jobIndex">{{ jobList[profile.jobIndex] }}</view>
-          <view v-else-if="profile.jobIndex === null" class="placeholder">请选择职业</view>
+        <picker :value="profile.job" :range="jobList" @change="handleJobChange">
+          <view v-if="profile.job">{{ jobList[profile.job] }}</view>
+          <view v-else-if="profile.job === null" class="placeholder">请选择职业</view>
         </picker>
       </view>
       <view class="form-item">
         <text>爱好</text>
-        <picker :value="profile.hobbyIndex" :range="hobbyList" @change="handleHobbyChange">
-          <view v-if="profile.hobbyIndex">{{ hobbyList[profile.hobbyIndex] }}</view>
-          <view v-else-if="profile.hobbyIndex === null" class="placeholder">请选择爱好</view>
+        <picker :value="profile.hobby" :range="hobbyList" @change="handleHobbyChange">
+          <view v-if="profile.hobby">{{ hobbyList[profile.hobby] }}</view>
+          <view v-else-if="profile.hobby === null" class="placeholder">请选择爱好</view>
         </picker>
       </view>
       <view class="form-item">
@@ -77,22 +87,26 @@
           :maxlength="50"
           placeholder="请填写简介"
           v-model="profile.synopsis"
+          :cursor-spacing="120"
         />
       </view>
     </view>
     <view v-show="rate === 3">
       <view class="form-item">
         <text>简历</text>
-        <view v-if="profile.resume_images.length" class="resume_images-list">
-          <image
-            v-for="item in profile.resume_images"
-            :key="item"
-            :src="item"
-            mode="scaleToFill"
-            @click="previewImage(item)"
-          />
+        <view v-if="profile?.resume_images?.length" class="resume_images-list">
+          <view v-for="(item, index) in profile?.resume_images" :key="item" class="image-container">
+            <image :src="item" mode="scaleToFill" @click="previewImage(item)" />
+            <view class="delete-button" @click="removeImage(index)">
+              <uni-icons type="close" size="30" color="#FFFFFF" />
+            </view>
+          </view>
         </view>
-        <view v-else class="resume_images" @click="handleAvatarChange">
+        <view
+          v-if="profile?.resume_images?.length < 3"
+          class="resume_images"
+          @click="handleResumeChange"
+        >
           <uni-icons type="cloud-upload" color="#00cec9" size="30" />
           <text>点击上传简历</text>
         </view>
@@ -103,8 +117,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+// store
+import { useUserInfoStore } from '@/stores'
 // utils
-import { uploadFile, specialty, jobList, hobbyList } from '../utils'
+import { uploadFileUrl } from '@/utils/request'
+import { specialtyList, jobList, hobbyList, genderList } from '../utils'
+// service
+import { getLocationInfoService } from '../service.ts'
 
 defineProps({
   rate: { type: Number, default: 1 },
@@ -112,73 +132,45 @@ defineProps({
 
 const profile = ref({
   // 头像
-  avatar: 'https://img.yzcdn.cn/vant/cat.jpeg',
+  avatar: '',
   // 昵称
-  username: '张三',
+  nickname: '',
   // 稿龄
-  straw: 3,
+  straw: null,
   // 年龄
-  age: 18,
+  age: null,
   // 性别
-  gender: '男', // 0 男 1 女
-  // 专业选择
-  specialtyIndex: null,
-  // 职业选择
-  jobIndex: null,
-  // 爱好
-  hobbyIndex: null,
+  gender: null,
+  // 手机号
+  phone: null,
   // 简介
   synopsis: '',
   // 生日
   birthday: '',
+  // 专业选择
+  specialty: null,
+  // 职业选择
+  job: null,
+  // 爱好
+  hobby: null,
   // 简历图片列表
-  resume_images: [
-    // 'https://yanxuan-item.nosdn.127.net/4aec56f5a1af7c3538e47acf301ad15b.png',
-    // 'https://yanxuan-item.nosdn.127.net/4aec56f5a1af7c3538e47acf301ad15b.png',
-    // 'https://yanxuan-item.nosdn.127.net/4aec56f5a1af7c3538e47acf301ad15b.png',
-  ],
+  resume_images: [],
 })
 
-// 上传头像 -  uni.chooseMedia 仅支持微信小程序端
-const handleAvatarChange = (): void => {
-  uni.chooseMedia({
-    // 文件个数
-    count: 1,
-    // 文件类型
-    mediaType: ['image'],
-    success: (res) => {
-      // 本地路径
-      const { tempFilePath } = res.tempFiles[0]
-      // 上传
-      uploadFile(tempFilePath)
-    },
-  })
-}
-
 // 生日选择
-const handleBirthdayChange = (e: any): void => {
-  profile.value.birthday = e.detail.value
-}
-
-// 专业选择
-const onPickerChange = (e: any): void => {
-  profile.value.specialtyIndex = e.detail.value
-}
-
-// 职业选择
-const handleJobChange = (e: any): void => {
-  profile.value.jobIndex = e.detail.value
-}
-
-// 爱好选择
-const handleHobbyChange = (e: any): void => {
-  profile.value.hobbyIndex = e.detail.value
-}
+const handleBirthdayChange = (e: any): void => (profile.value.birthday = e.detail.value)
 
 // 男女选择
-const onGenderChange = (e: any): void => {
-  profile.value.gender = e.detail.value
-}
+const onGenderChange = (e: any): void => (profile.value.gender = e.detail.value)
+
+// 专业选择
+const onPickerChange = (e: any): void => (profile.value.specialty = e.detail.value)
+
+// 职业选择
+const handleJobChange = (e: any): void => (profile.value.job = e.detail.value)
+
+// 爱好选择
+const handleHobbyChange = (e: any): void => (profile.value.hobby = e.detail.value)
 
 // 预览图片
 const previewImage = (url: string): void => {
@@ -187,6 +179,120 @@ const previewImage = (url: string): void => {
     urls: [url],
   })
 }
+
+// 上传简历
+const handleResumeChange = (): void => {
+  uni.chooseMedia({
+    // 文件个数
+    count: 3,
+    // 文件类型
+    mediaType: ['image'],
+    success: (res) => {
+      console.log(res.tempFiles)
+
+      const uploadPromises = res.tempFiles.map(
+        (file) =>
+          new Promise((resolve, reject) => {
+            uni.uploadFile({
+              url: uploadFileUrl,
+              name: 'file',
+              filePath: file.tempFilePath,
+              success: (uploadRes) => {
+                const { data } = JSON.parse(uploadRes.data)
+                resolve(data)
+              },
+              fail: () => {
+                uni.showToast({ title: '上传失败', icon: 'none' })
+                reject(new Error('上传失败'))
+              },
+            })
+          }),
+      )
+
+      Promise.all(uploadPromises)
+        .then((uploadedImages) => {
+          profile.value.resume_images = uploadedImages
+        })
+        .catch((err) => {
+          console.error('上传过程中出错:', err)
+        })
+    },
+  })
+}
+
+// 上传头像 - 仅支持微信小程序端
+const handleAvatarChange = (): void => {
+  uni.chooseMedia({
+    // 文件个数
+    count: 1,
+    // 文件类型
+    mediaType: ['image'],
+    success: (res) => {
+      uni.uploadFile({
+        url: uploadFileUrl,
+        name: 'file',
+        filePath: res.tempFiles?.[0]?.tempFilePath,
+        success: (uploadRes) => {
+          const { data } = JSON.parse(uploadRes.data)
+          profile.value.avatar = data
+        },
+        fail: () => {
+          uni.showToast({ title: '上传失败', icon: 'none' })
+        },
+      })
+    },
+  })
+}
+
+// 获取城市
+const handleGetCity = (): void => {
+  uni.authorize({
+    scope: 'scope.userLocation',
+    success: () => {
+      uni.getLocation({
+        type: 'wgs84',
+        success: async (res) => {
+          console.log('获取经纬度', res)
+
+          const { latitude, longitude } = res ?? {}
+          const { data } = await getLocationInfoService({
+            latitude: `${latitude}`,
+            longitude: `${longitude}`,
+          })
+
+          console.log('data', data)
+
+          const { city } = data?.result?.ad_info ?? {}
+          profile.value.city = city
+        },
+        fail: (err) => {
+          console.log(err)
+        },
+      })
+    },
+  })
+}
+
+// 删除简历图片
+const removeImage = (index: number): void => {
+  profile.value.resume_images.splice(index, 1)
+}
+
+onLoad(() => {
+  const { userInfo } = useUserInfoStore()
+  profile.value = {
+    ...userInfo,
+    // 专业选择
+    specialty: null,
+    // 职业选择
+    job: null,
+    // 爱好
+    hobby: null,
+    // 简历图片列表
+    resume_images: [],
+  }
+  handleGetCity()
+})
 
 defineExpose({
   profile,
@@ -223,7 +329,7 @@ defineExpose({
       color: $uni-text-color-placeholder;
 
       .radio {
-        margin-right: 12rpx;
+        margin-right: 24rpx;
       }
     }
 
@@ -237,13 +343,34 @@ defineExpose({
 
     .resume_images-list {
       display: flex;
-      flex: 1;
-      gap: 10rpx;
+      flex-wrap: wrap;
+      gap: 20rpx;
       padding: 10px 0px;
 
-      image {
+      .image-container {
+        position: relative;
         width: 180rpx;
         height: 180rpx;
+
+        image {
+          width: 100%;
+          height: 100%;
+          border-radius: 8rpx;
+        }
+
+        .delete-button {
+          position: absolute;
+          top: -10rpx;
+          right: -10rpx;
+          width: 50rpx;
+          height: 50rpx;
+          background-color: $uni-bg-color;
+          border-radius: 50%;
+          display: flex;
+          align-items: center; /* 垂直居中 */
+          justify-content: center; /* 水平居中 */
+          z-index: 1;
+        }
       }
     }
 
@@ -252,6 +379,7 @@ defineExpose({
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      margin-bottom: 24rpx;
 
       text {
         font-family: Gilroy;

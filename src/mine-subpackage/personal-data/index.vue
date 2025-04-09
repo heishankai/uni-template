@@ -63,7 +63,7 @@
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 // services
-import { updateUserInfoService } from './service'
+import { updateUserInfoService, getLocationInfoService } from './service'
 import { uploadFileUrl } from '@/utils/request'
 // utils
 import { genderList } from './utils'
@@ -148,13 +148,22 @@ const handleGetCity = (): void => {
     success: () => {
       uni.getLocation({
         type: 'wgs84',
-        success: (res) => {
-          console.log('res', res)
-          // rangeQuery(res.latitude, res.longitude)
+        success: async (res) => {
+          console.log('获取经纬度', res)
+
+          const { latitude, longitude } = res ?? {}
+          const { data } = await getLocationInfoService({
+            latitude: `${latitude}`,
+            longitude: `${longitude}`,
+          })
+
+          console.log('data', data)
+
+          const { city } = data?.result?.ad_info ?? {}
+          profile.value.city = city
         },
         fail: (err) => {
           console.log(err)
-          // locationHint()
         },
       })
     },
@@ -164,6 +173,7 @@ const handleGetCity = (): void => {
 onLoad(() => {
   const { userInfo } = useUserInfoStore()
   profile.value = { ...userInfo }
+  handleGetCity()
 })
 </script>
 

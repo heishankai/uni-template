@@ -79,9 +79,6 @@ onShow(() => {
     }
 
     .data {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       margin-left: 24rpx;
       line-height: 1.6;
     }
