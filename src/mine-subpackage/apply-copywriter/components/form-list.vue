@@ -121,10 +121,9 @@ import { onLoad } from '@dcloudio/uni-app'
 // store
 import { useUserInfoStore } from '@/stores'
 // utils
-import { uploadFileUrl } from '@/utils/request'
+import { getLocation } from '@/utils'
+import { uploadImages } from '@/utils/upload.ts'
 import { specialtyList, jobList, hobbyList, genderList } from '../utils'
-// service
-import { getLocationInfoService } from '../service.ts'
 
 defineProps({
   rate: { type: Number, default: 1 },
@@ -135,6 +134,8 @@ const profile = ref({
   avatar: '',
   // 昵称
   nickname: '',
+  // 城市
+  city: '',
   // 稿龄
   straw: null,
   // 年龄
@@ -182,95 +183,28 @@ const previewImage = (url: string): void => {
 
 // 上传简历
 const handleResumeChange = (): void => {
-  uni.chooseMedia({
-    // 文件个数
+  uploadImages({
     count: 3,
-    // 文件类型
-    mediaType: ['image'],
-    success: (res) => {
-      console.log(res.tempFiles)
-
-      const uploadPromises = res.tempFiles.map(
-        (file) =>
-          new Promise((resolve, reject) => {
-            uni.uploadFile({
-              url: uploadFileUrl,
-              name: 'file',
-              filePath: file.tempFilePath,
-              success: (uploadRes) => {
-                const { data } = JSON.parse(uploadRes.data)
-                resolve(data)
-              },
-              fail: () => {
-                uni.showToast({ title: '上传失败', icon: 'none' })
-                reject(new Error('上传失败'))
-              },
-            })
-          }),
-      )
-
-      Promise.all(uploadPromises)
-        .then((uploadedImages) => {
-          profile.value.resume_images = uploadedImages
-        })
-        .catch((err) => {
-          console.error('上传过程中出错:', err)
-        })
+    successCallback: (urls) => {
+      profile.value.resume_images = urls
     },
   })
 }
 
 // 上传头像 - 仅支持微信小程序端
 const handleAvatarChange = (): void => {
-  uni.chooseMedia({
-    // 文件个数
+  uploadImages({
     count: 1,
-    // 文件类型
-    mediaType: ['image'],
-    success: (res) => {
-      uni.uploadFile({
-        url: uploadFileUrl,
-        name: 'file',
-        filePath: res.tempFiles?.[0]?.tempFilePath,
-        success: (uploadRes) => {
-          const { data } = JSON.parse(uploadRes.data)
-          profile.value.avatar = data
-        },
-        fail: () => {
-          uni.showToast({ title: '上传失败', icon: 'none' })
-        },
-      })
+    successCallback: ([url]) => {
+      profile.value.avatar = url
     },
   })
 }
 
 // 获取城市
-const handleGetCity = (): void => {
-  uni.authorize({
-    scope: 'scope.userLocation',
-    success: () => {
-      uni.getLocation({
-        type: 'wgs84',
-        success: async (res) => {
-          console.log('获取经纬度', res)
-
-          const { latitude, longitude } = res ?? {}
-          const { data } = await getLocationInfoService({
-            latitude: `${latitude}`,
-            longitude: `${longitude}`,
-          })
-
-          console.log('data', data)
-
-          const { city } = data?.result?.ad_info ?? {}
-          profile.value.city = city
-        },
-        fail: (err) => {
-          console.log(err)
-        },
-      })
-    },
-  })
+const handleGetCity = async (): void => {
+  const { ad_info } = (await getLocation()) ?? {}
+  profile.value.city = ad_info?.city
 }
 
 // 删除简历图片
@@ -281,15 +215,8 @@ const removeImage = (index: number): void => {
 onLoad(() => {
   const { userInfo } = useUserInfoStore()
   profile.value = {
+    ...profile.value, // 保留默认结构
     ...userInfo,
-    // 专业选择
-    specialty: null,
-    // 职业选择
-    job: null,
-    // 爱好
-    hobby: null,
-    // 简历图片列表
-    resume_images: [],
   }
   handleGetCity()
 })
