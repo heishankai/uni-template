@@ -1,36 +1,24 @@
 import { request } from '@/utils/request'
 
-interface UpdateUserInfoType {
-  avatar: string
-  nickname: string
-  gender: null | string
-  age: null | number
-  phone: null | number
-  city: string
-  openid: string
-}
-
 /**
  * 更新用户信息
  */
-export const updateUserInfoService = (params: UpdateUserInfoType): Promise<any> => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const addAndupdateWriterInfoService = (params: any): Promise<any> => {
   return request({
     method: 'POST',
-    url: '/updateUserInfo',
+    url: '/addWriter',
     data: params,
   })
 }
 
 /**
- * 获取用户地址信息
+ * 获取用户信息
  */
-export const getLocationInfoService = (params: {
-  latitude: string
-  longitude: string
-}): Promise<any> => {
+export const getWriterInfoService = (params: { openid: string }): Promise<any> => {
   return request({
-    method: 'POST',
-    url: '/getLocationInfo',
+    method: 'GET',
+    url: '/getWriter',
     data: params,
   })
 }

@@ -31,7 +31,6 @@ const handleLogin = async (): Promise<void> => {
 
   // 登录成功，返回上一页
   uni.navigateBack({ delta: 1 })
-  uni.hideLoading()
 }
 </script>
 

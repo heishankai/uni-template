@@ -28,6 +28,12 @@ import formList from './components/form-list.vue'
 import rateBar from './components/rate-bar.vue'
 // utils
 import { requiredFields, isEmpty } from './utils'
+// services
+import { addAndupdateWriterInfoService } from './service'
+// store
+import { useUserInfoStore } from '@/stores'
+
+const { userInfo } = useUserInfoStore()
 
 const rate = ref(1)
 const formlistRef = ref<any>(null)
@@ -50,6 +56,8 @@ const nextStep = (): void => {
 
 // 提交
 const submit = async (): Promise<void> => {
+  uni.showLoading({ title: '加载中...', mask: true })
+
   for (const field of requiredFields) {
     const fieldValue = formlistRef.value.profile[field.key]
     if (isEmpty(fieldValue)) {
@@ -58,7 +66,11 @@ const submit = async (): Promise<void> => {
     }
   }
 
-  console.log(formlistRef.value.profile, ' formlistRef.value?.profile')
+  const { data } = await addAndupdateWriterInfoService(formlistRef.value.profile)
+  const { userInfoData } = data ?? {}
+
+  userInfo.isWriter = userInfoData?.isWriter
+  uni.navigateBack({ delta: 1 })
 }
 </script>
 

@@ -55,28 +55,28 @@
         <text>生日</text>
         <picker :value="profile.birthday" mode="date" @change="handleBirthdayChange">
           <view v-if="profile.birthday">{{ profile.birthday }}</view>
-          <view v-else-if="!profile.birthday" class="placeholder">请选择日期</view>
+          <view v-else class="placeholder">请选择日期</view>
         </picker>
       </view>
       <view class="form-item">
         <text>专业</text>
         <picker :value="profile.specialty" :range="specialtyList" @change="onPickerChange">
           <view v-if="profile.specialty">{{ specialtyList[profile.specialty] }}</view>
-          <view v-else-if="profile.specialty === null" class="placeholder">请选择专业</view>
+          <view v-else class="placeholder">请选择专业</view>
         </picker>
       </view>
       <view class="form-item">
         <text>职业</text>
         <picker :value="profile.job" :range="jobList" @change="handleJobChange">
           <view v-if="profile.job">{{ jobList[profile.job] }}</view>
-          <view v-else-if="profile.job === null" class="placeholder">请选择职业</view>
+          <view v-else class="placeholder">请选择职业</view>
         </picker>
       </view>
       <view class="form-item">
         <text>爱好</text>
         <picker :value="profile.hobby" :range="hobbyList" @change="handleHobbyChange">
           <view v-if="profile.hobby">{{ hobbyList[profile.hobby] }}</view>
-          <view v-else-if="profile.hobby === null" class="placeholder">请选择爱好</view>
+          <view v-else class="placeholder">请选择爱好</view>
         </picker>
       </view>
       <view class="form-item">
@@ -117,19 +117,21 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onShow } from '@dcloudio/uni-app'
 // store
 import { useUserInfoStore } from '@/stores'
 // utils
 import { getLocation } from '@/utils'
-import { uploadImages } from '@/utils/upload.ts'
+import { uploadImages } from '@/utils/upload'
 import { specialtyList, jobList, hobbyList, genderList } from '../utils'
+// services
+import { getWriterInfoService } from '../service'
 
 defineProps({
   rate: { type: Number, default: 1 },
 })
 
-const profile = ref({
+const profile = ref<any>({
   // 头像
   avatar: '',
   // 昵称
@@ -149,11 +151,11 @@ const profile = ref({
   // 生日
   birthday: '',
   // 专业选择
-  specialty: null,
+  specialty: undefined,
   // 职业选择
-  job: null,
+  job: undefined,
   // 爱好
-  hobby: null,
+  hobby: undefined,
   // 简历图片列表
   resume_images: [],
 })
@@ -202,7 +204,7 @@ const handleAvatarChange = (): void => {
 }
 
 // 获取城市
-const handleGetCity = async (): void => {
+const handleGetCity = async (): Promise<void> => {
   const { ad_info } = (await getLocation()) ?? {}
   profile.value.city = ad_info?.city
 }
@@ -212,13 +214,24 @@ const removeImage = (index: number): void => {
   profile.value.resume_images.splice(index, 1)
 }
 
-onLoad(() => {
+// 获取用户信息
+const getWriterInfoData = async (): Promise<void> => {
   const { userInfo } = useUserInfoStore()
+  const { data } = await getWriterInfoService({ openid: userInfo.openid })
+
   profile.value = {
-    ...profile.value, // 保留默认结构
+    ...profile.value,
     ...userInfo,
+    ...data,
   }
-  handleGetCity()
+
+  if (!data?.city) {
+    handleGetCity()
+  }
+}
+
+onShow(() => {
+  getWriterInfoData()
 })
 
 defineExpose({
