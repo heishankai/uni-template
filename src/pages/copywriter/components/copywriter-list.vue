@@ -3,7 +3,7 @@
     <view class="copywriter-list__title">
       <view>每日推荐</view>
     </view>
-    <view class="copywriter-list-item" v-for="item in guessList" :key="item.id">
+    <view class="copywriter-list-item" v-for="item in guessList" :key="item._id">
       <view class="header">
         <view class="left" @click="handleCopywriterPage(item)">
           <image :src="item.avatar" mode="aspectFill" />
@@ -12,9 +12,12 @@
             <view class="years-work">稿龄：{{ item.straw }}年</view>
           </view>
         </view>
-        <view class="right" @click="handleCollect(item.id)">
-          <uni-icons type="plusempty" size="18" color="#00cec9" />
-          <text>收藏</text>
+        <view class="right" @click="handleCollect(item._id)">
+          <text v-if="item?.isCollect">已收藏</text>
+          <view v-else>
+            <uni-icons type="plusempty" size="18" color="#00cec9" />
+            <text>收藏</text>
+          </view>
         </view>
       </view>
       <view class="synopsis" @click="handleCopywriterPage(item)">
@@ -22,14 +25,14 @@
       </view>
       <view class="footer">
         <view class="left">
-          <view class="praise-number" @click="handlePraise(item.id)">
+          <view class="praise-number" @click="handlePraise(item._id)">
             <button>
               <uni-icons custom-prefix="iconfont" type="icon-like" color="#808080" size="20" />
               <text>{{ item.praiseNumber }}</text>
             </button>
           </view>
         </view>
-        <view @click="handleShare(item.id)">
+        <view @click="handleShare(item._id)">
           <button open-type="share">
             <uni-icons custom-prefix="iconfont" type="icon-fenxiang" color="#808080" size="20" />
           </button>
@@ -42,7 +45,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 // services
-import { getAllWriterService } from '../service'
+import { getAllWriterService, CollectAndUncollectService } from '../service'
 
 // 猜你喜欢的列表
 const guessList = ref<any[]>([])
@@ -67,6 +70,7 @@ const getHomeGoodsGuessLikeData = async (): Promise<void> => {
 
   // 数组追加
   guessList.value.push(...(data?.data ?? []))
+
   // // 分页条件
   if (pageParams.value.page) {
     // 页码累加
@@ -106,10 +110,16 @@ const handleCopywriterPage = (item): void => {
 }
 
 // 收藏
-const handleCollect = (id): void => {
+const handleCollect = async (writerId): Promise<void> => {
   uni.vibrateShort()
-  console.log(id)
-  uni.showToast({ title: '收藏成功', icon: 'none' })
+  const { message } = await CollectAndUncollectService({ writerId })
+  uni.showToast({ title: message, icon: 'none' })
+
+  // 更新当前列表中对应撰稿人的收藏状态
+  const index = guessList.value.findIndex((guessItem) => guessItem?._id === writerId)
+  if (index !== -1) {
+    guessList.value[index].isCollect = !guessList.value[index].isCollect
+  }
 }
 
 // 点赞

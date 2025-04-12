@@ -10,3 +10,14 @@ export const getAllWriterService = (params: { page: number; limit: number }): Pr
     data: params,
   })
 }
+
+/**
+ * 收藏和取消收藏
+ */
+export const CollectAndUncollectService = (params: { writerId: string }): Promise<any> => {
+  return request({
+    method: 'POST',
+    url: '/collect',
+    data: params,
+  })
+}
