@@ -1,9 +1,6 @@
 <template>
   <view class="copywriter-list">
-    <view class="copywriter-list__title">
-      <view>每日推荐</view>
-    </view>
-    <view class="copywriter-list-item" v-for="item in guessList" :key="item._id">
+    <view class="copywriter-list-item" v-for="item in writerListdata" :key="item._id">
       <view class="header">
         <view class="left" @click="handleCopywriterPage(item)">
           <image :src="item.avatar" mode="aspectFill" />
@@ -43,62 +40,26 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-// services
-import { getAllWriterService, CollectAndUncollectService } from '../service'
+import { CollectAndUncollectService } from '../service'
 
-// 猜你喜欢的列表
-const guessList = ref<any[]>([])
-
-// 已结束标记
-const finish = ref(false)
-
-const pageParams = ref<{ page: number; limit: number }>({
-  page: 1,
-  limit: 10,
-})
-
-// 列表数据
-const getHomeGoodsGuessLikeData = async (): Promise<void> => {
-  // 退出分页判断
-  if (finish.value === true) {
-    return uni.showToast({ icon: 'none', title: '没有更多数据~' })
-  }
-  const { data }: any = await getAllWriterService({ ...pageParams.value })
-
-  console.log(data, 'result')
-
-  // 数组追加
-  guessList.value.push(...(data?.data ?? []))
-
-  // // 分页条件
-  if (pageParams.value.page) {
-    // 页码累加
-    pageParams.value.page++
-  }
-
-  if (!data?.data?.length) {
-    finish.value = true
-  }
+interface Writer {
+  id: string
+  avatar: string
+  nickname: string
+  straw: number
+  synopsis: string
+  praiseNumber: number
+  openid: string
+  _id: string
+  isCollect: boolean
 }
 
-// 重置数据
-const resetData = (): void => {
-  pageParams.value.page = 1
-  guessList.value = []
-  finish.value = false
-}
+defineProps<{
+  writerListdata: Writer[]
+}>()
 
-// 组件挂载完毕
-onMounted(() => {
-  getHomeGoodsGuessLikeData()
-})
-
-// 暴露方法
-defineExpose({
-  resetData,
-  getMore: getHomeGoodsGuessLikeData,
-})
+// 收藏
+const emit = defineEmits(['updateWriterListdata'])
 
 // 跳转到详情页
 const handleCopywriterPage = (item): void => {
@@ -112,15 +73,11 @@ const handleCopywriterPage = (item): void => {
 // 收藏
 const handleCollect = async (writerId): Promise<void> => {
   uni.vibrateShort()
-  const { data } = await CollectAndUncollectService({ writerId })
 
+  const { data } = await CollectAndUncollectService({ writerId })
   uni.showToast({ title: data?.message, icon: 'none' })
 
-  // 更新当前列表中对应撰稿人的收藏状态
-  const index = guessList.value.findIndex((guessItem) => guessItem?._id === writerId)
-  if (index !== -1) {
-    guessList.value[index].isCollect = !guessList.value[index].isCollect
-  }
+  emit('updateWriterListdata')
 }
 
 // 点赞
@@ -140,16 +97,6 @@ const handleShare = (id): void => {
 <style lang="scss" scoped>
 .copywriter-list {
   margin: 24rpx;
-
-  .copywriter-list__title {
-    margin: 24rpx 0rpx;
-    font-family: Montserrat;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 27px;
-    letter-spacing: 0.54px;
-    color: $uni-text-color-black;
-  }
 
   .copywriter-list-item {
     padding: 12rpx;

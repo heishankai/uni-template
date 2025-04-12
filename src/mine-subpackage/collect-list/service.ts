@@ -1,17 +1,12 @@
 import { request } from '@/utils/request'
 
 /**
- * 模糊查询撰稿人
+ * 获取我的收藏
  */
-export const searchWriterService = (params: {
-  page: number
-  limit: number
-  keyword: string
-}): Promise<any> => {
+export const collectListService = (): Promise<any> => {
   return request({
-    method: 'POST',
-    url: '/searchWriter',
-    data: params,
+    method: 'GET',
+    url: '/collectList',
   })
 }
 

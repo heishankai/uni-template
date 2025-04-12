@@ -15,7 +15,11 @@
     </view>
     <scroll-view class="scroll-view" scroll-y>
       <!-- 撰稿人列表 -->
-      <copywriter-list v-if="writerListdata?.length" :writerListdata="writerListdata" />
+      <copywriter-list
+        v-if="writerListdata?.length"
+        :writerListdata="writerListdata"
+        @updateWriterListdata="handleUpdateWriterListdata"
+      />
       <view v-else class="no-data">
         <uni-icons custom-prefix="iconfont" type="icon-wushuju" color="#808080" size="100" />
         <view>暂无数据</view>
@@ -34,13 +38,18 @@ import copywriterList from './components/copywriter-list.vue'
 const { safeAreaInsets } = uni.getSystemInfoSync()
 // 撰稿人列表数据
 const writerListdata = ref<any[]>([])
+const keyword = ref<string>('')
 
 // 搜索
 const handleInputChange = debounce(async (e: any): Promise<any> => {
+  console.log('e.detail.value', e.detail.value)
+
   if (!e.detail.value) {
     writerListdata.value = []
     return
   }
+
+  keyword.value = e.detail.value
 
   uni.showLoading({ title: '加载中...', mask: true })
   const { data } = await searchWriterService({
@@ -52,6 +61,13 @@ const handleInputChange = debounce(async (e: any): Promise<any> => {
   writerListdata.value = data || []
   uni.hideLoading()
 }, 500)
+
+// 处理子组件传递的更新数据
+const handleUpdateWriterListdata = (): any => {
+  handleInputChange({
+    detail: { value: keyword.value },
+  })
+}
 
 // 返回上一页
 const handleBack = (): void => {

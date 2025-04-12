@@ -1,6 +1,6 @@
 <template>
   <view class="copywriter-list">
-    <view class="copywriter-list-item" v-for="item in writerListdata" :key="item.id">
+    <view class="copywriter-list-item" v-for="item in writerListdata" :key="item._id">
       <view class="header">
         <view class="left" @click="handleCopywriterPage(item)">
           <image :src="item.avatar" mode="aspectFill" />
@@ -9,9 +9,12 @@
             <view class="years-work">稿龄：{{ item.straw }}年</view>
           </view>
         </view>
-        <view class="right" @click="handleCollect(item.id)">
-          <uni-icons type="plusempty" size="18" color="#00cec9" />
-          <text>收藏</text>
+        <view class="right" @click="handleCollect(item._id)">
+          <text v-if="item?.isCollect">已收藏</text>
+          <view v-else>
+            <uni-icons type="plusempty" size="18" color="#00cec9" />
+            <text>收藏</text>
+          </view>
         </view>
       </view>
       <view class="synopsis" @click="handleCopywriterPage(item)">
@@ -19,14 +22,14 @@
       </view>
       <view class="footer">
         <view class="left">
-          <view class="praise-number" @click="handlePraise(item.id)">
+          <view class="praise-number" @click="handlePraise(item._id)">
             <button>
               <uni-icons custom-prefix="iconfont" type="icon-like" color="#808080" size="20" />
               <text>{{ item.praiseNumber }}</text>
             </button>
           </view>
         </view>
-        <view @click="handleShare(item.id)">
+        <view @click="handleShare(item._id)">
           <button open-type="share">
             <uni-icons custom-prefix="iconfont" type="icon-fenxiang" color="#808080" size="20" />
           </button>
@@ -37,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import { CollectAndUncollectService } from '../service'
 interface Writer {
   id: string
   avatar: string
@@ -45,11 +49,16 @@ interface Writer {
   synopsis: string
   praiseNumber: number
   openid: string
+  isCollect: boolean
+  _id: string
 }
 
 defineProps<{
   writerListdata: Writer[]
 }>()
+
+// 收藏
+const emit = defineEmits(['updateWriterListdata'])
 
 // 跳转到详情页
 const handleCopywriterPage = (item): void => {
@@ -61,10 +70,11 @@ const handleCopywriterPage = (item): void => {
 }
 
 // 收藏
-const handleCollect = (id): void => {
+const handleCollect = async (writerId): Promise<void> => {
   uni.vibrateShort()
-  console.log(id)
-  uni.showToast({ title: '收藏成功', icon: 'none' })
+  const { data } = await CollectAndUncollectService({ writerId })
+  uni.showToast({ title: data?.message, icon: 'none' })
+  emit('updateWriterListdata')
 }
 
 // 点赞
