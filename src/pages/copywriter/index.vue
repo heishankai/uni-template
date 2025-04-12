@@ -2,6 +2,8 @@
   <view class="container">
     <!-- 顶部导航 -->
     <custom-navbar></custom-navbar>
+    <!-- 精选撰稿人 -->
+    <swiper-copywriter />
     <!-- 滚动容器 -->
     <scroll-view
       enable-back-to-top
@@ -13,7 +15,6 @@
       scroll-y
     >
       <template>
-        <swiper-copywriter />
         <copywriter-list ref="guessRef" />
       </template>
     </scroll-view>

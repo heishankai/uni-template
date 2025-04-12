@@ -3,19 +3,11 @@
     <scroll-view scroll-y>
       <template>
         <image
-          src="@/static/copywriter-sbuPages/WechatIMG127.jpg"
+          v-for="(item, index) in copywriterInfo?.resume_images"
+          :key="index"
+          :src="item"
           mode="scaleToFill"
-          @click="previewImage('./static/copywriter-sbuPages/WechatIMG127.jpg')"
-        />
-        <image
-          src="@/static/copywriter-sbuPages/WechatIMG129.jpg"
-          mode="scaleToFill"
-          @click="previewImage('./static/copywriter-sbuPages/WechatIMG129.jpg')"
-        />
-        <image
-          src="@/static/copywriter-sbuPages/WechatIMG128.jpg"
-          mode="scaleToFill"
-          @click="previewImage('./static/copywriter-sbuPages/WechatIMG128.jpg')"
+          @click="previewImage(item)"
         />
       </template>
     </scroll-view>
@@ -49,14 +41,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 // components
 import subscribeModal from './components/subscribe-modal.vue'
+// service
+import { getOnewriterService } from './service'
 
 // 撰稿人信息
 const copywriterInfo = ref<any>({
   collect: true, // 是否收藏
   praise: false, // 是否点赞
-  resume: [], // 简历
+  resume_images: [], // 简历
 })
 
 const subscribeModalRef = ref()
@@ -84,13 +79,19 @@ const handleSubscribe = (): void => {
 const previewImage = (url: string): void => {
   uni.previewImage({
     current: url,
-    urls: [
-      '@/static/copywriter-sbuPages/WechatIMG127.jpg',
-      '@/static/copywriter-sbuPages/WechatIMG129.jpg',
-      '@/static/copywriter-sbuPages/WechatIMG128.jpg',
-    ],
+    urls: [url],
   })
 }
+
+// 页面加载
+onLoad((options) => {
+  const { openid, nickname } = options || {}
+  uni.setNavigationBarTitle({ title: decodeURIComponent(nickname) })
+
+  getOnewriterService({ openid }).then((res: any) => {
+    copywriterInfo.value = res?.data || {}
+  })
+})
 </script>
 
 <style lang="scss">

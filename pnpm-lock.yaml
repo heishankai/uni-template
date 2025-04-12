@@ -41,6 +41,7 @@ specifiers:
   husky: '6'
   js-base64: ^3.7.7
   lint-staged: ^15.4.3
+  lodash-es: ^4.17.21
   pinia: 2.0.27
   pinia-plugin-persistedstate: 3.2.0
   prettier: ^3.5.2
@@ -71,6 +72,7 @@ dependencies:
   '@dcloudio/uni-quickapp-webview': 3.0.0-4030620241128001_vue@3.5.13
   '@dcloudio/uni-ui': 1.5.7
   js-base64: 3.7.7
+  lodash-es: 4.17.21
   pinia: 2.0.27_6ojp7pwvafskey22aliwdxkyey
   pinia-plugin-persistedstate: 3.2.0_pinia@2.0.27
   vue: 3.5.13_typescript@4.9.5
@@ -5226,6 +5228,10 @@ packages:
     dependencies:
       p-locate: 6.0.0
     dev: true
+
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
 
   /lodash.camelcase/4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}

@@ -11,6 +11,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-wushuju:before {
+  content: '\e616';
+}
+
 .icon-shu:before {
   content: '\e600';
 }

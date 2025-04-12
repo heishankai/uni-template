@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
-const searchValue = ref<string>('')
 
-console.log(searchValue.value, 'searchValue')
-
-const handleInputChange = (e: any): void => {
-  searchValue.value = e.detail.value
+// 跳转到搜索撰稿人页面
+const handleInputChange = (): void => {
+  uni.navigateTo({
+    url: `/copywriter-subpackage/search-writer/index`,
+  })
 }
 </script>
 
@@ -19,7 +18,7 @@ const handleInputChange = (e: any): void => {
     <view class="search">
       <view class="search-input">
         <uni-icons type="search" color="#00cec9" size="24" />
-        <input v-model="searchValue" placeholder="搜索撰稿人" @input="handleInputChange" />
+        <input placeholder="搜索撰稿人" @focus="handleInputChange" />
       </view>
     </view>
   </view>
