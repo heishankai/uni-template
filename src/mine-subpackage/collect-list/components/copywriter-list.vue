@@ -21,14 +21,7 @@
         <view>简介： {{ item?.synopsis }}</view>
       </view>
       <view class="footer">
-        <view class="left">
-          <view class="praise-number" @click="handlePraise(item._id)">
-            <button>
-              <uni-icons custom-prefix="iconfont" type="icon-like" color="#808080" size="20" />
-              <text>{{ item.praiseNumber }}</text>
-            </button>
-          </view>
-        </view>
+        <view class="left"> </view>
         <view @click="handleShare(item._id)">
           <button open-type="share">
             <uni-icons custom-prefix="iconfont" type="icon-fenxiang" color="#808080" size="20" />
@@ -52,6 +45,7 @@ interface Writer {
   openid: string
   _id: string
   isCollect: boolean
+  isLike: boolean
 }
 
 defineProps<{
@@ -78,13 +72,6 @@ const handleCollect = async (writerId): Promise<void> => {
   uni.showToast({ title: data?.message, icon: 'none' })
 
   emit('updateWriterListdata')
-}
-
-// 点赞
-const handlePraise = (id): void => {
-  uni.vibrateShort()
-  console.log(id)
-  uni.showToast({ title: '点赞成功', icon: 'none' })
 }
 
 // 分享
@@ -169,12 +156,9 @@ const handleShare = (id): void => {
         display: flex;
         align-items: center;
 
-        .praise-number {
-          text {
-            margin-left: 8rpx;
-            font-size: 26rpx;
-            color: $uni-text-color-placeholder;
-          }
+        image {
+          width: 46rpx;
+          height: 46rpx;
         }
       }
     }

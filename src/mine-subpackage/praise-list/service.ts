@@ -6,17 +6,17 @@ import { request } from '@/utils/request'
 export const collectListService = (): Promise<any> => {
   return request({
     method: 'GET',
-    url: '/collectList',
+    url: '/likeList',
   })
 }
 
 /**
- * 收藏和取消收藏
+ * 点赞和取消点赞
  */
-export const CollectAndUncollectService = (params: { writerId: string }): Promise<any> => {
+export const LikeOrUnlikeService = (params: { writerId: string }): Promise<any> => {
   return request({
     method: 'POST',
-    url: '/collectOrUncollect',
+    url: '/likeOrUnlike',
     data: params,
   })
 }

@@ -24,8 +24,12 @@
         <view class="left">
           <view class="praise-number" @click="handlePraise(item._id)">
             <button>
-              <uni-icons custom-prefix="iconfont" type="icon-like" color="#808080" size="20" />
-              <text>{{ item.praiseNumber }}</text>
+              <image
+                v-if="item.isLike"
+                src="@/static/copywriter-sbuPages/praise_on.png"
+                mode="aspectFill"
+              />
+              <image v-else src="@/static/copywriter-sbuPages/praise.png" mode="aspectFill" />
             </button>
           </view>
         </view>
@@ -40,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { CollectAndUncollectService } from '../service'
+import { CollectAndUncollectService, LikeOrUnlikeService } from '../service'
 interface Writer {
   id: string
   avatar: string
@@ -51,6 +55,7 @@ interface Writer {
   openid: string
   isCollect: boolean
   _id: string
+  isLike: boolean
 }
 
 defineProps<{
@@ -72,16 +77,19 @@ const handleCopywriterPage = (item): void => {
 // 收藏
 const handleCollect = async (writerId): Promise<void> => {
   uni.vibrateShort()
+
   const { data } = await CollectAndUncollectService({ writerId })
   uni.showToast({ title: data?.message, icon: 'none' })
   emit('updateWriterListdata')
 }
 
 // 点赞
-const handlePraise = (id): void => {
+const handlePraise = async (writerId): Promise<void> => {
   uni.vibrateShort()
-  console.log(id)
-  uni.showToast({ title: '点赞成功', icon: 'none' })
+
+  const { data } = await LikeOrUnlikeService({ writerId })
+  uni.showToast({ title: data?.message, icon: 'none' })
+  emit('updateWriterListdata')
 }
 
 // 分享
@@ -166,12 +174,9 @@ const handleShare = (id): void => {
         display: flex;
         align-items: center;
 
-        .praise-number {
-          text {
-            margin-left: 8rpx;
-            font-size: 26rpx;
-            color: $uni-text-color-placeholder;
-          }
+        image {
+          width: 46rpx;
+          height: 46rpx;
         }
       }
     }
