@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { tabList } from '../utils'
+
+defineProps({
+  selectedTab: {
+    type: String,
+    default: '0',
+  },
+})
+
+const emit = defineEmits(['updateSelectTab'])
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
-const tabList = [
-  { label: '全部', value: 1 },
-  { label: '男性', value: 2 },
-  { label: '女性', value: 3 },
-]
-
-// 选中的 tab
-const selectedTab = ref(tabList[0].value)
-
 // 选择 tab 方法
-const selectTab = (value: number): void => {
+const selectTab = (value: string): void => {
   uni.vibrateShort()
-  selectedTab.value = value
+  emit('updateSelectTab', value) // 将 value 作为参数传递
 }
 </script>
 

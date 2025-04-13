@@ -30,5 +30,5 @@ export const isEmpty = (value: any): boolean => {
 
 export const genderList = [
   { value: '1', name: '男' },
-  { value: '0', name: '女' },
+  { value: '2', name: '女' },
 ]

@@ -1,10 +1,16 @@
 <template>
   <view class="container">
-    <search-navbar />
-    <scroll-view class="scroll-view" scroll-y>
-      <template>
-        <story-list />
-      </template>
+    <search-navbar :selectedTab="selectedTab" @updateSelectTab="updateSelectTab" />
+    <scroll-view
+      enable-back-to-top
+      refresher-enabled
+      @refresherrefresh="onRefresherrefresh"
+      :refresher-triggered="isTriggered"
+      @scrolltolower="onScrolltolower"
+      class="scroll-view"
+      scroll-y
+    >
+      <story-list ref="guessRef" :selectedTab="selectedTab" />
     </scroll-view>
     <tabbar selected="0"></tabbar>
     <custom-popup ref="subscribeModalRef" />
@@ -13,31 +19,44 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
-// services
-import { getHomeGetRecommendService } from './service'
-
 // components
 import tabbar from '@/components/custom-tab-bar.vue'
 import searchNavbar from './components/search-navbar.vue'
 import customPopup from './components/custom-popup.vue'
 import storyList from './components/story-list.vue'
+// utils
+import { useGuessList } from './utils'
 
-const subscribeModalRef = ref()
+// 组合式函数调用
+const { guessRef, onScrolltolower } = useGuessList()
 
-// 获取推荐轮博数据
-const getHomeGetRecommendData = async (): Promise<void> => {
-  const res = await getHomeGetRecommendService()
-  console.log('获取推荐轮博数据', res)
+const subscribeModalRef = ref<any>()
+const selectedTab = ref<string>('0')
+const isTriggered = ref(false)
+console.log('selectedTab', selectedTab.value)
+
+// 选择 tab 方法
+const updateSelectTab = (val): void => {
+  selectedTab.value = val
+}
+
+// 自定义下拉刷新被触发
+const onRefresherrefresh = async (): Promise<void> => {
+  // 开始动画
+  isTriggered.value = true
+
+  // 加载数据
+  guessRef.value?.resetData()
+
+  await guessRef.value?.getMore()
+
+  // 关闭动画
+  isTriggered.value = false
 }
 
 // const handleSubscribe = (): void => {
 //   subscribeModalRef.value.subscribeModalOpen.open()
 // }
-
-onLoad(() => {
-  getHomeGetRecommendData()
-})
 </script>
 
 <style lang="scss">

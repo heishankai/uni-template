@@ -4,7 +4,7 @@ export const hobbyList = ['音乐', '美术', '旅游', '运动', '摄影']
 
 export const genderList = [
   { value: '1', name: '男' },
-  { value: '0', name: '女' },
+  { value: '2', name: '女' },
 ]
 
 // 必填项定义

@@ -1,11 +1,16 @@
 import { request } from '@/utils/request'
 
 /**
- * 获取首页轮播数据
+ * 获取首页人员数据
  */
-export const getHomeGetRecommendService = (): Promise<any> => {
+export const getAllUserInfoListService = (params: {
+  page: number
+  limit: number
+  gender: number
+}): Promise<any> => {
   return request({
     method: 'GET',
-    url: '/home/getRecommend',
+    url: '/home/getAllUserInfoList',
+    data: params,
   })
 }

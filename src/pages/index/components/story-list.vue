@@ -3,13 +3,15 @@
     <view class="item" v-for="item in storyList" :key="item.id">
       <view class="header">
         <view class="avatar">
-          <image :src="item.picture" mode="aspectFill" />
+          <image :src="item?.avatar" mode="aspectFill" />
         </view>
         <view class="info">
-          <view class="name">姓名：{{ item.name }}</view>
-          <view class="text">年龄：{{ item.age }}</view>
-          <view class="text">性别：{{ item.gender }}</view>
-          <view class="text">城市：{{ item.city }}</view>
+          <view class="text">姓名：{{ item?.nickname }}</view>
+          <view class="text">年龄：{{ item?.age }}</view>
+          <view class="text" v-if="item?.gender"
+            >性别：{{ item?.gender === '1' ? '男' : '女' }}</view
+          >
+          <view class="text">城市：{{ item?.city }}</view>
           <view class="text">
             <view @click="handlePlay(item)" class="message">
               <trumpet-animation :size="22" :isPlay="item.isPlay" color="#808080" />
@@ -28,43 +30,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
+// components
 import trumpetAnimation from '@/components/trumpet-animation.vue'
+// service
+import { getAllUserInfoListService } from '../service'
 
-const storyList = ref<any[]>([
-  {
-    id: 1,
-    name: '陈淑雅',
-    time: '10:00',
-    gender: '女',
-    age: '65',
-    city: '上海',
-    src: '',
-    picture: 'https://yanxuan-item.nosdn.127.net/4aec56f5a1af7c3538e47acf301ad15b.png',
-    isPlay: false, // 初始化每个 item 的播放状态
+const props = defineProps({
+  selectedTab: {
+    type: String,
+    default: '0',
   },
-  {
-    id: 2,
-    name: '李凯',
-    time: '09:00',
-    gender: '男',
-    age: '70',
-    city: '杭州',
-    picture: 'https://yanxuan-item.nosdn.127.net/0e1681ab3a4a5aaf185f0bb123f07f99.jpg',
-    isPlay: false,
+})
+
+const storyList = ref<any[]>([])
+const finish = ref(false)
+const pageParams = ref<{ page: number; limit: number; gender }>({
+  page: 1,
+  limit: 10,
+  gender: props.selectedTab,
+})
+
+// 监听 selectedTab 的变化
+watch(
+  () => props.selectedTab,
+  async (newValue) => {
+    console.log('selectedTab', newValue)
+    pageParams.value.gender = newValue
+    resetData() // 重置分页和数据
+    await getHomeGetRecommendData() // 获取新数据
   },
-  {
-    id: 3,
-    name: '唐玄奘',
-    time: '09:00',
-    gender: '男',
-    age: '72',
-    city: '西安',
-    picture: 'https://yanxuan-item.nosdn.127.net/0d8fe495fe82abbdf8826c4fd1e1e77b.png',
-    isPlay: false,
-  },
-  // 其他项目
-])
+)
 
 // 播放录音
 const handlePlay = (item): void => {
@@ -72,15 +69,57 @@ const handlePlay = (item): void => {
   item.isPlay = !item.isPlay
 }
 
-// 收藏
+// 建立联系
 const handleCollect = (id): void => {
   uni.vibrateShort()
-  console.log(id)
 
   uni.navigateTo({
     url: `/copywriter-subpackage/dialogue-detail/index?id=${id}&name=${id}`,
   })
 }
+
+// 获取分页用户列表
+const getHomeGetRecommendData = async (): Promise<void> => {
+  // 退出分页判断
+  if (finish.value === true) {
+    return uni.showToast({ icon: 'none', title: '没有更多数据~' })
+  }
+
+  uni.showLoading({ title: '加载中...', mask: true })
+
+  const { data } = await getAllUserInfoListService({ ...pageParams.value })
+
+  // 数组追加
+  storyList.value.push(...(data?.data ?? []))
+
+  // // 分页条件
+  if (pageParams.value.page) {
+    // 页码累加
+    pageParams.value.page++
+  }
+
+  if (!data?.data?.length) {
+    finish.value = true
+  }
+  uni.hideLoading()
+}
+
+// 重置数据
+const resetData = (): void => {
+  pageParams.value.page = 1
+  storyList.value = []
+  finish.value = false
+}
+
+// 暴露方法
+defineExpose({
+  resetData,
+  getMore: getHomeGetRecommendData,
+})
+
+onShow(() => {
+  getHomeGetRecommendData()
+})
 </script>
 
 <style lang="scss" scoped>

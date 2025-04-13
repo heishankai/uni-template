@@ -42,8 +42,6 @@ const keyword = ref<string>('')
 
 // 搜索
 const handleInputChange = debounce(async (e: any): Promise<any> => {
-  console.log('e.detail.value', e.detail.value)
-
   if (!e.detail.value) {
     writerListdata.value = []
     return
