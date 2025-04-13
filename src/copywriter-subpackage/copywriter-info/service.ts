@@ -10,3 +10,25 @@ export const getOnewriterService = (params: { openid: string }): Promise<any> =>
     data: params,
   })
 }
+
+/**
+ * 收藏和取消收藏
+ */
+export const CollectAndUncollectService = (params: { writerId: string }): Promise<any> => {
+  return request({
+    method: 'POST',
+    url: '/collectOrUncollect',
+    data: params,
+  })
+}
+
+/**
+ * 点赞和取消点赞
+ */
+export const LikeOrUnlikeService = (params: { writerId: string }): Promise<any> => {
+  return request({
+    method: 'POST',
+    url: '/likeOrUnlike',
+    data: params,
+  })
+}

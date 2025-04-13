@@ -13,18 +13,18 @@
     </scroll-view>
     <view class="footer">
       <view class="operate">
-        <view @click="handleCollect">
+        <view @click="handleCollect(copywriterInfo?._id)">
           <image
-            v-if="copywriterInfo.collect"
+            v-if="copywriterInfo?.isCollect"
             src="@/static/copywriter-sbuPages/collect_on.png"
             mode="aspectFill"
           />
           <image v-else src="@/static/copywriter-sbuPages/collect.png" mode="aspectFill" />
           <text :style="{ color: copywriterInfo.collect ? '#151515' : '#c8bfbf' }">收藏</text>
         </view>
-        <view @click="handlePraise">
+        <view @click="handlePraise(copywriterInfo?._id)">
           <image
-            v-if="copywriterInfo.praise"
+            v-if="copywriterInfo?.isLike"
             src="@/static/copywriter-sbuPages/praise_on.png"
             mode="aspectFill"
           />
@@ -45,29 +45,26 @@ import { onLoad } from '@dcloudio/uni-app'
 // components
 import subscribeModal from './components/subscribe-modal.vue'
 // service
-import { getOnewriterService } from './service'
+import { getOnewriterService, CollectAndUncollectService, LikeOrUnlikeService } from './service'
 
-// 撰稿人信息
-const copywriterInfo = ref<any>({
-  collect: true, // 是否收藏
-  praise: false, // 是否点赞
-  resume_images: [], // 简历
-})
-
+const copywriterInfo = ref<any>({})
 const subscribeModalRef = ref()
 
 // 收藏
-const handleCollect = (): void => {
+const handleCollect = async (writerId): Promise<void> => {
   uni.vibrateShort()
-  copywriterInfo.value.collect = !copywriterInfo.value.collect
-  uni.showToast({ title: '收藏成功', icon: 'none' })
+  const { data } = await CollectAndUncollectService({ writerId })
+  uni.showToast({ title: data?.message, icon: 'none' })
+  copywriterInfo.value.isCollect = data?.data
 }
 
 // 点赞
-const handlePraise = (): void => {
+const handlePraise = async (writerId): Promise<void> => {
   uni.vibrateShort()
-  copywriterInfo.value.praise = !copywriterInfo.value.praise
-  uni.showToast({ title: '点赞成功', icon: 'none' })
+  const { data } = await LikeOrUnlikeService({ writerId })
+
+  uni.showToast({ title: data?.message, icon: 'none' })
+  copywriterInfo.value.isLike = data?.data
 }
 
 // 立即预约
@@ -83,14 +80,12 @@ const previewImage = (url: string): void => {
   })
 }
 
-// 页面加载
-onLoad((options) => {
+onLoad(async (options) => {
   const { openid, nickname } = options || {}
   uni.setNavigationBarTitle({ title: decodeURIComponent(nickname) })
 
-  getOnewriterService({ openid }).then((res: any) => {
-    copywriterInfo.value = res?.data || {}
-  })
+  const { data } = await getOnewriterService({ openid })
+  copywriterInfo.value = data || {}
 })
 </script>
 
