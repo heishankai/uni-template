@@ -43,7 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 // services
 import { getAllWriterService, CollectAndUncollectService } from '../service'
 
@@ -90,7 +91,7 @@ const resetData = (): void => {
 }
 
 // 组件挂载完毕
-onMounted(() => {
+onShow(() => {
   getHomeGoodsGuessLikeData()
 })
 
@@ -119,7 +120,7 @@ const handleCollect = async (writerId): Promise<void> => {
   // 更新当前列表中对应撰稿人的收藏状态
   const index = guessList.value.findIndex((guessItem) => guessItem?._id === writerId)
   if (index !== -1) {
-    guessList.value[index].isCollect = !guessList.value[index].isCollect
+    guessList.value[index].isCollect = data?.data
   }
 }
 

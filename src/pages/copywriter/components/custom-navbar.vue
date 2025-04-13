@@ -18,7 +18,7 @@ const handleInputChange = (): void => {
     <view class="search">
       <view class="search-input">
         <uni-icons type="search" color="#00cec9" size="24" />
-        <input placeholder="搜索撰稿人" @focus="handleInputChange" />
+        <input placeholder="搜索撰稿人" disabled @click="handleInputChange" />
       </view>
     </view>
   </view>
