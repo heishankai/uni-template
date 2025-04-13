@@ -33,7 +33,6 @@ const { guessRef, onScrolltolower } = useGuessList()
 const subscribeModalRef = ref<any>()
 const selectedTab = ref<string>('0')
 const isTriggered = ref(false)
-console.log('selectedTab', selectedTab.value)
 
 // 选择 tab 方法
 const updateSelectTab = (val): void => {

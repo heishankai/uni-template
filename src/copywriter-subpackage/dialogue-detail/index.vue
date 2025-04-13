@@ -6,37 +6,40 @@
       </template>
     </scroll-view>
     <view class="footer">
-      <button @click="handleDialoguePage(info)">发送消息</button>
+      <button @click="handleDialoguePage">发送消息</button>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
+import { onLoad } from '@dcloudio/uni-app'
+import { ref } from 'vue'
 // components
 import infoData from './components/info-data.vue'
+// service
+import { getUserInfoByIdServive } from './service'
 
-const info = {
-  id: 1,
-  // 头像
-  avatar: 'https://img.yzcdn.cn/vant/cat.jpeg',
-  // 昵称
-  name: '陈淑雅',
-  // 手机号
-  phone: '18667****23',
-  // 性别
-  gender: '女',
-  // 生日
-  birthday: '1997-12-23',
-  // 年龄
-  age: 24,
+const info = ref<any>({})
+
+// 获取用户详情数据
+const getInfoData = async (_id: string): Promise<void> => {
+  const { data } = await getUserInfoByIdServive({ _id })
+  info.value = data?.data
 }
 
+onLoad((options) => {
+  const { _id, nickname } = options ?? {}
+  uni.setNavigationBarTitle({ title: decodeURIComponent(nickname) })
+  // 获取详情数据
+  getInfoData(_id)
+})
+
 // 跳转到详情页
-const handleDialoguePage = (item): void => {
-  const { id, name } = item
+const handleDialoguePage = (): void => {
   uni.vibrateShort()
+  const { _id, nickname } = info.value ?? {}
   uni.navigateTo({
-    url: `/copywriter-subpackage/dialogue/index?id=${id}&name=${name}`,
+    url: `/copywriter-subpackage/dialogue/index?_id=${_id}&nickname=${nickname}`,
   })
 }
 </script>

@@ -63,10 +63,9 @@ const handleSend = (): void => {
 
 // 页面加载
 onLoad((options) => {
-  console.log(options, 'options')
-  const { name } = options || {}
+  const { nickname } = options || {}
 
-  uni.setNavigationBarTitle({ title: decodeURIComponent(name) })
+  uni.setNavigationBarTitle({ title: decodeURIComponent(nickname) })
 })
 </script>
 

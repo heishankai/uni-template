@@ -21,7 +21,7 @@
         </view>
       </view>
       <view class="footer">
-        <view class="right" @click="handleCollect(item.id)">
+        <view class="right" @click="handleContact(item)">
           <text>建立联系</text>
         </view>
       </view>
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
+import { onLoad } from '@dcloudio/uni-app'
 // components
 import trumpetAnimation from '@/components/trumpet-animation.vue'
 // service
@@ -56,10 +56,9 @@ const pageParams = ref<{ page: number; limit: number; gender }>({
 watch(
   () => props.selectedTab,
   async (newValue) => {
-    console.log('selectedTab', newValue)
     pageParams.value.gender = newValue
-    resetData() // 重置分页和数据
-    await getHomeGetRecommendData() // 获取新数据
+    resetData()
+    await getHomeGetRecommendData()
   },
 )
 
@@ -70,11 +69,12 @@ const handlePlay = (item): void => {
 }
 
 // 建立联系
-const handleCollect = (id): void => {
+const handleContact = (item): void => {
+  const { _id, nickname } = item ?? {}
   uni.vibrateShort()
 
   uni.navigateTo({
-    url: `/copywriter-subpackage/dialogue-detail/index?id=${id}&name=${id}`,
+    url: `/copywriter-subpackage/dialogue-detail/index?_id=${_id}&nickname=${nickname}`,
   })
 }
 
@@ -117,7 +117,7 @@ defineExpose({
   getMore: getHomeGetRecommendData,
 })
 
-onShow(() => {
+onLoad(() => {
   getHomeGetRecommendData()
 })
 </script>
