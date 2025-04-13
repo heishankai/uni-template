@@ -1,6 +1,6 @@
 <template>
   <view class="story-list">
-    <view class="item" v-for="item in storyList" :key="item._id">
+    <view class="item" v-for="item in storyListData" :key="item._id">
       <view class="header">
         <view class="avatar">
           <image :src="item?.avatar" mode="aspectFill" />
@@ -30,37 +30,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
 // components
 import trumpetAnimation from '@/components/trumpet-animation.vue'
-// service
-import { getAllUserInfoListService } from '../service'
 
-const props = defineProps({
-  selectedTab: {
-    type: String,
-    default: '0',
+interface StoryItem {
+  _id: string
+  avatar: string
+  nickname: string
+  age: number
+  gender?: string
+  city: string
+  time: string
+  isPlay: boolean
+}
+
+defineProps({
+  storyListData: {
+    type: Array as () => StoryItem[],
+    default: () => [],
   },
 })
-
-const storyList = ref<any[]>([])
-const finish = ref(false)
-const pageParams = ref<{ page: number; limit: number; gender }>({
-  page: 1,
-  limit: 10,
-  gender: props.selectedTab,
-})
-
-// 监听 selectedTab 的变化
-watch(
-  () => props.selectedTab,
-  async (newValue) => {
-    pageParams.value.gender = newValue
-    resetData()
-    await getHomeGetRecommendData()
-  },
-)
 
 // 播放录音
 const handlePlay = (item): void => {
@@ -77,54 +66,11 @@ const handleContact = (item): void => {
     url: `/copywriter-subpackage/dialogue-detail/index?_id=${_id}&nickname=${nickname}`,
   })
 }
-
-// 获取分页用户列表
-const getHomeGetRecommendData = async (): Promise<void> => {
-  // 退出分页判断
-  if (finish.value === true) {
-    return uni.showToast({ icon: 'none', title: '没有更多数据~' })
-  }
-
-  uni.showLoading({ title: '加载中...', mask: true })
-
-  const { data } = await getAllUserInfoListService({ ...pageParams.value })
-
-  // 数组追加
-  storyList.value.push(...(data?.data ?? []))
-
-  // // 分页条件
-  if (pageParams.value.page) {
-    // 页码累加
-    pageParams.value.page++
-  }
-
-  if (!data?.data?.length) {
-    finish.value = true
-  }
-  uni.hideLoading()
-}
-
-// 重置数据
-const resetData = (): void => {
-  pageParams.value.page = 1
-  storyList.value = []
-  finish.value = false
-}
-
-// 暴露方法
-defineExpose({
-  resetData,
-  getMore: getHomeGetRecommendData,
-})
-
-onLoad(() => {
-  getHomeGetRecommendData()
-})
 </script>
 
 <style lang="scss" scoped>
 .story-list {
-  padding: 0rpx 30rpx 30rpx 30rpx;
+  padding: 24rpx;
 
   .item {
     padding: 24rpx;

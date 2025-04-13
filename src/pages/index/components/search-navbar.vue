@@ -18,6 +18,13 @@ const selectTab = (value: string): void => {
   uni.vibrateShort()
   emit('updateSelectTab', value) // 将 value 作为参数传递
 }
+
+// 跳转到搜索页面
+const handleInputChange = (): void => {
+  uni.navigateTo({
+    url: `/copywriter-subpackage/search-user/index`,
+  })
+}
 </script>
 
 <template>
@@ -47,8 +54,15 @@ const selectTab = (value: string): void => {
     </view>
 
     <!-- 欢迎语 -->
-    <view class="search">
+    <view class="titleTips">
       <view class="tips">欢迎倾听故事</view>
+    </view>
+
+    <view class="search">
+      <view class="search-input">
+        <uni-icons type="search" color="#00cec9" size="24" />
+        <input placeholder="搜索用户" disabled @click="handleInputChange" />
+      </view>
     </view>
 
     <!-- Tabs -->
@@ -74,6 +88,40 @@ const selectTab = (value: string): void => {
   flex-direction: column;
   padding-top: 20px;
   padding: 20rpx 30rpx 30rpx 30rpx;
+
+  .search {
+    z-index: 1;
+    margin: 24rpx 0rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .search-input {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      padding: 20rpx;
+      letter-spacing: 0.54rpx;
+      font-size: 28rpx;
+      border-radius: 30px;
+      color: $uni-text-color-placeholder;
+      background: $uni-text-color-inverse;
+      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+      uni-icons {
+        margin-right: 16rpx;
+      }
+
+      input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: $uni-text-color;
+        font-size: 28rpx;
+      }
+    }
+  }
 
   .title5 {
     position: absolute;
@@ -160,7 +208,7 @@ const selectTab = (value: string): void => {
     }
   }
 
-  .search {
+  .titleTips {
     z-index: 2;
     margin-top: 200rpx;
     display: flex;

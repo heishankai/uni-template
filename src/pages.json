@@ -117,6 +117,13 @@
 					"style": {
 						"navigationBarTitleText": "个人资料"
 					}
+				},
+				{
+					"path": "search-user/index",
+					"style": {
+						"navigationBarTitleText": "搜索用户",
+						"navigationStyle": "custom"
+					}
 				}
 			]
 		},
