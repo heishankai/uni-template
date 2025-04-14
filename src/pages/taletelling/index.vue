@@ -36,16 +36,18 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onHide } from '@dcloudio/uni-app'
+import { onHide, onShow } from '@dcloudio/uni-app'
 // components
 import tabbar from '@/components/custom-tab-bar.vue'
 import voiceAnimation from '@/components/voice-animation.vue'
 import recordMessage from './components/record-message.vue'
 // utils
 import { useTimeout, useRecorder } from './utils'
+// service
+import { getRecordListService } from './service'
 
 const isRecording = ref<boolean>(false)
-const recordList = ref<{ src: string; time: string; isPlay: boolean }[]>([])
+const recordList = ref<{ src: string; time: string }[]>([])
 const recordingTime = ref('00:00')
 
 const { startRecord, stopRecord }: any = useRecorder(recordList, recordingTime) || {}
@@ -76,6 +78,12 @@ const startRecording = (): void => {
   startTimeout()
 }
 
+// 获取录音列表
+const getRecordListData = async (): Promise<void> => {
+  const { data } = await getRecordListService()
+  recordList.value = data || []
+}
+
 // 停止录音
 const stopRecording = (): void => {
   if (!isRecording.value) {
@@ -93,6 +101,10 @@ onHide(() => {
   isRecording.value = false
   recordList.value = []
   stopTimeout()
+})
+
+onShow(() => {
+  getRecordListData()
 })
 </script>
 

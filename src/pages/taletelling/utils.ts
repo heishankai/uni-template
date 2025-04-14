@@ -48,7 +48,7 @@ export const useTimeout = (callback: () => void, delay: number): any => {
 
 // 录音功能
 export const useRecorder = (
-  recordList: Ref<{ src: string; time: string; isPlay: boolean }[]>,
+  recordList: Ref<{ src: string; time: string }[]>,
   recordingTime: Ref<string>,
 ): any => {
   let recorderManager: UniApp.RecorderManager
@@ -72,7 +72,6 @@ export const useRecorder = (
       recordList.value.push({
         src: res.tempFilePath,
         time: finalTime,
-        isPlay: false,
       })
 
       // 推入录音信息后再重置录音时间
@@ -106,61 +105,4 @@ export const useRecorder = (
   }
 
   return { startRecord, stopRecord }
-}
-
-// 播放录音功能
-export const useMultiAudioPlayer = (): any => {
-  let innerAudioContext: UniApp.InnerAudioContext | null = null
-
-  // 播放音频
-  const play = (item): void => {
-    if (!innerAudioContext) {
-      return
-    }
-
-    // 动画
-    item.isPlay = !item.isPlay
-
-    innerAudioContext.onPlay(() => {
-      console.log('开始播放')
-      item.isPlay = true
-    })
-
-    innerAudioContext.onEnded(() => {
-      console.log('播放完成')
-      item.isPlay = false
-    })
-
-    innerAudioContext.onError((res) => {
-      console.log(res.errMsg, '播放失败')
-      item.isPlay = true
-    })
-
-    innerAudioContext.src = encodeURI(item?.src)
-    innerAudioContext.play()
-  }
-
-  onShow(() => {
-    innerAudioContext = uni.createInnerAudioContext()
-
-    uni.setInnerAudioOption({
-      obeyMuteSwitch: false, // 解决IOS静音无法播放音频
-    })
-
-    innerAudioContext.autoplay = true
-  })
-
-  // 页面隐藏时自动暂停录音
-  // 页面隐藏时自动暂停录音
-  onHide(() => {
-    if (innerAudioContext) {
-      innerAudioContext.pause() // 暂停当前播放
-      innerAudioContext.stop() // 停止播放
-      innerAudioContext.destroy() // 销毁音频实例
-      innerAudioContext = null // 重置引用
-      console.log('页面 onHide，暂停录音')
-    }
-  })
-
-  return { play }
 }

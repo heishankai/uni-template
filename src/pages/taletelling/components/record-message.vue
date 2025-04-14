@@ -1,56 +1,96 @@
 <template>
   <!-- 录音消息 -->
   <scroll-view scroll-y class="record-message">
-    <view class="title"> 快来录制我的故事吧... </view>
-    <view
-      @click="handlePlay(item)"
-      class="message"
-      v-for="(item, index) in props?.recordList"
+    <view class="title">快来录制我的故事吧...</view>
+    <trumpet-animation
+      v-for="(item, index) in recordList"
       :key="index"
-    >
-      <trumpet-animation :size="24" :isPlay="item.isPlay" color="#808080" />
-      <text class="time">{{ item?.time }}</text>
-    </view>
+      :size="24"
+      color="#808080"
+      :src="item?.src"
+      :time="item?.time"
+    />
+    <button @click="handleSaveRecord">保存我的录音</button>
   </scroll-view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 // components
 import trumpetAnimation from '@/components/trumpet-animation.vue'
-// utils
-import { useMultiAudioPlayer } from '../utils'
+// 上传地址
+import { uploadFileUrl } from '@/utils/request'
+// service
+import { saveRecordService } from '../service'
 
+// props
 const props = defineProps<{
-  recordList: { time: string; src: string; isPlay: boolean }[]
+  recordList: { time: string; src: string }[]
 }>()
 
-console.log('recordList', props.recordList)
+// 保存我的录音
+const handleSaveRecord = async (): Promise<void> => {
+  const recordList = props?.recordList
 
-const isRecording = ref<boolean>(false)
-const { play } = useMultiAudioPlayer()
+  if (!recordList?.length) {
+    uni.showToast({ title: '没有录音文件需要上传', icon: 'none' })
+    return
+  }
 
-// 播放录音
-const handlePlay = (item): void => {
-  play(item, props.recordList)
-  isRecording.value = true
+  uni.showLoading({ title: '上传中...' })
 
-  // 长录音播放
-  // const bgAudioManager = uni.getBackgroundAudioManager()
-  // bgAudioManager.title = '致爱丽丝'
-  // bgAudioManager.singer = '暂无'
-  // bgAudioManager.coverImgUrl = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/music-a.png'
-  // bgAudioManager.src = url
+  try {
+    // 并发上传所有录音文件
+    const uploadPromises = recordList.map((item, index) => {
+      return new Promise<{ src: string; time: string }>((resolve, reject) => {
+        uni.uploadFile({
+          url: uploadFileUrl,
+          filePath: item?.src,
+          name: 'file',
+          formData: {
+            index,
+            time: item?.time,
+          },
+          success(res) {
+            try {
+              const response = JSON.parse(res.data)
+              if (response?.data) {
+                resolve({ src: response.data, time: item?.time })
+              } else {
+                reject(new Error('上传失败，返回数据为空'))
+              }
+            } catch {
+              reject(new Error('解析上传响应失败'))
+            }
+          },
+          fail(err) {
+            reject(err)
+          },
+        })
+      })
+    })
+
+    const uploadedData = await Promise.all(uploadPromises)
+
+    // 所有上传成功后再调用保存服务
+    const { message } = await saveRecordService({ recordList: uploadedData })
+    uni.showToast({ title: message, icon: 'none' })
+  } catch (error) {
+    console.error('录音上传失败：', error)
+    uni.showToast({ title: '录音文件保存失败，请重试', icon: 'none' })
+  } finally {
+    uni.hideLoading()
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .record-message {
-  height: 40vh;
+  height: 46vh;
   padding: 24rpx;
   overflow-y: scroll;
   background-color: #f8f8f8;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
 
   .title {
     font-family: Poppins;
@@ -61,30 +101,19 @@ const handlePlay = (item): void => {
     color: $uni-bg-color;
   }
 
-  .message {
-    width: 200rpx;
-    padding: 10rpx;
-    margin: 24rpx 0rpx;
-    border-radius: 10rpx;
-    background-color: #ffffff;
-    display: flex;
-    align-items: center;
-    position: relative;
+  button {
+    position: absolute;
+    bottom: 24rpx;
+    right: 48rpx;
+    font-weight: 500;
+    letter-spacing: 3px;
+    border-radius: 30px;
+    color: $uni-text-color-inverse;
+    background-color: $uni-bg-color;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
-    .time {
-      margin-left: 12rpx;
-      color: $uni-text-color-placeholder;
-    }
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: -20rpx;
-      top: 50%;
-      transform: translateY(-50%);
-      border-width: 10rpx;
-      border-style: solid;
-      border-color: transparent #ffffff transparent transparent;
+    &::after {
+      border: none;
     }
   }
 }

@@ -1,22 +1,22 @@
 <template>
-  <view :style="[boxStyle]" class="box">
-    <view class="audio-style" :style="[audioStyle]" :class="{ animation: isPlay }">
-      <view class="small" :style="{ 'background-color': color }"></view>
-      <view class="middle" :style="{ 'border-right-color': color }"></view>
-      <view class="large" :style="{ 'border-right-color': color }"></view>
+  <view class="message" @click="play">
+    <view :style="[boxStyle]" class="box">
+      <view class="audio-style" :style="[audioStyle]" :class="{ animation: isPlay }">
+        <view class="small" :style="{ 'background-color': color }"></view>
+        <view class="middle" :style="{ 'border-right-color': color }"></view>
+        <view class="large" :style="{ 'border-right-color': color }"></view>
+      </view>
     </view>
+    <text class="time">{{ time }}</text>
   </view>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { onHide } from '@dcloudio/uni-app'
+import { computed, ref } from 'vue'
 
 // 定义 props
 const props = defineProps({
-  isPlay: {
-    type: Boolean,
-    default: false,
-  },
   direction: {
     type: String,
     default: 'right',
@@ -29,6 +29,65 @@ const props = defineProps({
     type: String,
     default: '#222',
   },
+  src: {
+    type: String,
+    default: '',
+  },
+  time: {
+    type: String,
+    default: '',
+  },
+})
+const isPlay = ref<boolean>(false)
+let innerAudioContext: UniApp.InnerAudioContext | null = null
+
+// 播放音频
+const play = (): void => {
+  if (!innerAudioContext) {
+    innerAudioContext = uni.createInnerAudioContext()
+
+    uni.setInnerAudioOption({
+      obeyMuteSwitch: false,
+    })
+
+    innerAudioContext.autoplay = true
+  }
+
+  if (isPlay.value) {
+    // 如果正在播放，则暂停
+    innerAudioContext.stop()
+    isPlay.value = false
+    console.log('点击暂停播放')
+    return
+  }
+
+  innerAudioContext.onPlay(() => {
+    console.log('开始播放')
+    isPlay.value = true
+  })
+
+  innerAudioContext.onEnded(() => {
+    console.log('播放完成')
+    isPlay.value = false
+  })
+
+  innerAudioContext.onError((res) => {
+    console.log(res.errMsg, '播放失败')
+    isPlay.value = true
+  })
+
+  innerAudioContext.src = encodeURI(props?.src)
+  innerAudioContext.play()
+}
+
+onHide(() => {
+  if (innerAudioContext) {
+    innerAudioContext.pause() // 暂停当前播放
+    innerAudioContext.stop() // 停止播放
+    innerAudioContext.destroy() // 销毁音频实例
+    innerAudioContext = null // 重置引用
+    isPlay.value = false
+  }
 })
 
 // 计算属性: audioStyle
@@ -49,9 +108,32 @@ const boxStyle = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-/* view {
-  box-sizing: border-box;
-} */
+.message {
+  width: 200rpx;
+  padding: 10rpx;
+  margin: 24rpx 0rpx;
+  border-radius: 10rpx;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .time {
+    margin-left: 12rpx;
+    color: $uni-text-color-placeholder;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -20rpx;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 10rpx;
+    border-style: solid;
+    border-color: transparent #ffffff transparent transparent;
+  }
+}
 
 .box {
   display: inline-flex;
