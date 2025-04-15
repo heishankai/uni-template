@@ -56,7 +56,7 @@ const nextStep = (): void => {
 
 // 提交
 const submit = async (): Promise<void> => {
-  uni.showLoading({ title: '加载中...', mask: true })
+  uni.showLoading({ title: '提交中...', mask: true })
 
   for (const field of requiredFields) {
     const fieldValue = formlistRef.value.profile[field.key]
@@ -71,6 +71,7 @@ const submit = async (): Promise<void> => {
 
   userInfo.isWriter = userInfoData?.isWriter
   uni.navigateBack({ delta: 1 })
+  uni.hideLoading()
 }
 </script>
 

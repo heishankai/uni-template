@@ -1,4 +1,6 @@
 import { ref } from 'vue'
+import { uploadFileUrl } from '@/utils/request'
+import { saveRecordService } from './service'
 import { onHide, onShow } from '@dcloudio/uni-app'
 // 格式化数字为 2 位数
 export const pad = (num: number): any => {
@@ -69,13 +71,38 @@ export const useRecorder = (
       // 先捕获当前的录音时间
       const finalTime = recordingTime.value
 
-      recordList.value.push({
-        src: res.tempFilePath,
-        time: finalTime,
-      })
+      uni.uploadFile({
+        url: uploadFileUrl,
+        filePath: res?.tempFilePath,
+        name: 'file',
+        async success(res) {
+          const { data } = JSON.parse(res?.data)
+          console.log(data, 'data')
 
-      // 推入录音信息后再重置录音时间
-      recordingTime.value = '00:00'
+          const { message } = await saveRecordService({
+            recordList: [
+              {
+                src: data,
+                time: finalTime,
+              },
+            ],
+          })
+
+          uni.showToast({ title: message, icon: 'none' })
+
+          recordList.value.push({
+            src: data,
+            time: finalTime,
+          })
+
+          // 推入录音信息后再重置录音时间
+          recordingTime.value = '00:00'
+        },
+        fail(err) {
+          console.error('上传失败:', err)
+          uni.showToast({ title: '上传失败', icon: 'none' })
+        },
+      })
     })
   })
 

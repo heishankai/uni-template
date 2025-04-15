@@ -117,7 +117,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
+import { onLoad } from '@dcloudio/uni-app'
 // store
 import { useUserInfoStore } from '@/stores'
 // utils
@@ -186,9 +186,9 @@ const previewImage = (url: string): void => {
 // 上传简历
 const handleResumeChange = (): void => {
   uploadImages({
-    count: 3,
+    count: 1,
     successCallback: (urls) => {
-      profile.value.resume_images = urls
+      profile.value.resume_images = [...(profile.value.resume_images || []), ...urls]
     },
   })
 }
@@ -230,7 +230,7 @@ const getWriterInfoData = async (): Promise<void> => {
   }
 }
 
-onShow(() => {
+onLoad(() => {
   getWriterInfoData()
 })
 

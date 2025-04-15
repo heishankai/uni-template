@@ -44,27 +44,3 @@ export const isEmpty = (value: any): boolean => {
 
   return !value
 }
-
-// 文件上传-兼容小程序端、H5端、App端
-export const uploadFile = (file: string): void => {
-  console.log(file, 'file')
-
-  // 文件上传
-  uni.uploadFile({
-    url: '/member/profile/avatar',
-    name: 'file',
-    filePath: file,
-    success: (res) => {
-      if (res.statusCode === 200) {
-        // const avatar = JSON.parse(res.data).result.avatar
-        // 个人信息页数据更新
-        // profile.value.avatar = avatar
-        // 本地 Store头像更新
-        // memberStore.profile!.avatar = avatar
-        uni.showToast({ icon: 'success', title: '更新成功' })
-      } else {
-        uni.showToast({ icon: 'error', title: '出现错误' })
-      }
-    },
-  })
-}

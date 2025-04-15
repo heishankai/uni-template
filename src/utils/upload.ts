@@ -1,4 +1,5 @@
 import { uploadFileUrl } from '@/utils/request'
+
 // 公共上传方法
 export const uploadImages = ({
   count = 1,
@@ -11,6 +12,7 @@ export const uploadImages = ({
     count,
     mediaType: ['image'],
     success: (res) => {
+      uni.showToast({ title: '正在上传...', icon: 'loading' })
       const uploadPromises = res.tempFiles.map(
         (file) =>
           new Promise<string>((resolve, reject) => {
@@ -25,6 +27,7 @@ export const uploadImages = ({
               fail: () => {
                 uni.showToast({ title: '上传失败', icon: 'none' })
                 reject(new Error('上传失败'))
+                uni.hideLoading()
               },
             })
           }),
@@ -33,6 +36,7 @@ export const uploadImages = ({
       Promise.all(uploadPromises)
         .then(successCallback)
         .catch((err) => {
+          uni.hideLoading()
           console.error('上传过程中出错:', err)
         })
     },

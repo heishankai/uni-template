@@ -30,6 +30,7 @@
         </view>
       </view>
     </scroll-view>
+    <record-confirm ref="subscribeModalOpen" />
     <tabbar selected="2" />
   </view>
 </template>
@@ -41,6 +42,7 @@ import { onHide, onShow } from '@dcloudio/uni-app'
 import tabbar from '@/components/custom-tab-bar.vue'
 import voiceAnimation from '@/components/voice-animation.vue'
 import recordMessage from './components/record-message.vue'
+import recordConfirm from './components/record-confirm.vue'
 // utils
 import { useTimeout, useRecorder } from './utils'
 // service
@@ -49,6 +51,7 @@ import { getRecordListService } from './service'
 const isRecording = ref<boolean>(false)
 const recordList = ref<{ src: string; time: string }[]>([])
 const recordingTime = ref('00:00')
+const subscribeModalOpen = ref<any>(false)
 
 const { startRecord, stopRecord }: any = useRecorder(recordList, recordingTime) || {}
 
@@ -68,7 +71,8 @@ const startRecording = (): void => {
   }
 
   if (recordList?.value?.length >= 3) {
-    uni.showToast({ title: '每天最多只能录制3段哟', icon: 'none' })
+    subscribeModalOpen.value.subscribeModalOpen.open()
+    // uni.showToast({ title: '每天最多只能录制3段哟', icon: 'none' })
     return
   }
 

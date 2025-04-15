@@ -172,6 +172,18 @@
 					}
 				}
 			]
+		},
+		{
+			// 子包的根目录
+			"root": "taletelling-subpackage",
+			"pages": [
+				{
+					"path": "top-up/index",
+					"style": {
+						"navigationBarTitleText": "充值中心"
+					}
+				}
+			]
 		}
 	],
 	// 分包预下载规则
@@ -186,6 +198,12 @@
 			"network": "all",
 			"packages": [
 				"mine-subpackage"
+			]
+		},
+		"pages/taletelling/index": {
+			"network": "all",
+			"packages": [
+				"taletelling-subpackage"
 			]
 		}
 	}
