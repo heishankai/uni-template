@@ -12,12 +12,6 @@
             >性别：{{ item?.gender === '1' ? '男' : '女' }}</view
           >
           <view class="text">城市：{{ item?.city }}</view>
-          <view class="text">
-            <view @click="handlePlay(item)" class="message">
-              <trumpet-animation :size="22" :isPlay="item.isPlay" color="#808080" />
-              <text class="time">{{ item?.time }}</text>
-            </view>
-          </view>
         </view>
       </view>
       <view class="footer">
@@ -30,9 +24,6 @@
 </template>
 
 <script setup lang="ts">
-// components
-import trumpetAnimation from '@/components/trumpet-animation.vue'
-
 interface StoryItem {
   _id: string
   avatar: string
@@ -41,7 +32,6 @@ interface StoryItem {
   gender?: string
   city: string
   time: string
-  isPlay: boolean
 }
 
 defineProps({
@@ -50,12 +40,6 @@ defineProps({
     default: () => [],
   },
 })
-
-// 播放录音
-const handlePlay = (item): void => {
-  // 切换该 item 的播放状态
-  item.isPlay = !item.isPlay
-}
 
 // 建立联系
 const handleContact = (item): void => {

@@ -1,13 +1,16 @@
 <template>
   <view class="container">
-    <scroll-view class="scroll-view" scroll-y>
-      <template>
-        <dialogue-list
-          :oppositeDialogueList="oppositeDialogueList"
-          :myDialogueList="myDialogueList"
-        />
-      </template>
+    <scroll-view
+      class="scroll-view"
+      scroll-y
+      scroll-with-animation
+      :scroll-into-view="scrollIntoView"
+    >
+      <dialogue-list :messageListData="messageListData" />
+      <!-- 滚动锚点 -->
+      <view id="bottom-anchor" style="height: 1px" />
     </scroll-view>
+
     <view class="search">
       <view class="search-input">
         <input v-model="searchValue" placeholder="发送我的消息" :cursor-spacing="100" />
@@ -20,52 +23,83 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
-// componets
+import { ref, nextTick } from 'vue'
+import { onLoad, onShow } from '@dcloudio/uni-app'
+// utils
+import { getUserInfo } from './utils'
+// components
 import dialogueList from './components/dialogue-list.vue'
+// service
+import { getMessageListService } from './service'
+
+import { getSocket } from '@/utils/socket'
+
+const socket = getSocket()
 
 const searchValue = ref<string>('')
-const oppositeDialogueList = ref<any>([
-  {
-    time: '2021-09-02', // 聊天的时间
-    message: 'Right away! Are you free today for a quich catch up with my team?', // 聊天的内容
-    id: 1, // 聊天的id
-    avatar: 'https://img.yzcdn.cn/vant/cat.jpeg', // 聊天的人的头像
-  },
-])
+const toUserid = ref<string>('')
+const messageListData = ref<any[]>([])
 
-const myDialogueList = ref<any>([
-  {
-    time: '2021-09-02', // 聊天的时间
-    message: 'Right away! Are you free today for a quich catch up with my team?', // 聊天的内容
-    id: 1, // 聊天的id
-    avatar: 'https://img.yzcdn.cn/vant/cat.jpeg', // 聊天的人的头像
-  },
-])
+// scroll-view 滚动锚点控制
+const scrollIntoView = ref('')
 
-// 发送
+const scrollToBottom = (): void => {
+  scrollIntoView.value = ''
+  nextTick(() => {
+    scrollIntoView.value = 'bottom-anchor'
+  })
+}
+
+// 发送消息
 const handleSend = (): void => {
   if (!searchValue.value) {
     uni.showToast({ title: '请输入内容', icon: 'none' })
     return
   }
-  console.log(searchValue.value, 'searchValue')
   uni.vibrateShort()
-  myDialogueList.value?.push({
-    time: '2021-09-02', // 聊天的时间
+
+  const msgObj = {
+    avatar: getUserInfo().avatar,
     message: searchValue.value,
-    id: Date.now(), // 聊天的id
-    avatar: 'https://img.yzcdn.cn/vant/cat.jpeg', // 聊天的人的头像
-  })
+    nickname: getUserInfo().nickname,
+    userid: getUserInfo().id,
+    toUserid: toUserid.value,
+  }
+
+  socket.emit('userMessage', msgObj)
+  messageListData.value.push(msgObj)
   searchValue.value = ''
+
+  nextTick(() => {
+    scrollToBottom()
+  })
+}
+
+// 获取历史消息
+const getMessageList = async (toUserid): Promise<void> => {
+  const { data } = await getMessageListService({ toUserid })
+  messageListData.value = data
+  nextTick(() => {
+    scrollToBottom()
+  })
 }
 
 // 页面加载
 onLoad((options) => {
-  const { nickname } = options || {}
-
+  const { _id, nickname } = options || {}
+  toUserid.value = _id
   uni.setNavigationBarTitle({ title: decodeURIComponent(nickname) })
+  getMessageList(_id)
+})
+
+// 页面展示时初始化 WebSocket
+onShow(() => {
+  socket.on('wxchat', (data: any) => {
+    messageListData.value.push(data)
+    nextTick(() => {
+      scrollToBottom()
+    })
+  })
 })
 </script>
 

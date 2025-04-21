@@ -1,26 +1,16 @@
 <template>
   <view class="dialogue-list">
-    <view
-      class="opposite"
-      v-for="item in oppositeDialogueList"
-      :key="item.id"
-      @click="handleDialogueDetails(item)"
-    >
-      <view class="header">
-        <view class="left">
-          <image :src="item.avatar" mode="aspectFill" />
-          <view class="message">{{ item.message }}</view>
+    <view class="opposite" v-for="item in messageListData" :key="item.userid">
+      <!-- 别人发的 -->
+      <view class="header" v-if="item.userid !== getUserInfo().id">
+        <view class="left" @click="handleDialogueDetails(item)">
+          <image :src="item?.avatar" mode="aspectFill" />
+          <view class="message">{{ item?.message }}</view>
         </view>
       </view>
-    </view>
-    <view
-      class="my"
-      v-for="item in myDialogueList"
-      :key="item.id"
-      @click="handleDialogueDetails(item)"
-    >
-      <view class="header">
-        <view class="right">
+      <!-- 自己发的 -->
+      <view class="header" v-else>
+        <view class="right" @click="handleDialogueDetails(item)">
           <view class="message">{{ item.message }}</view>
           <image :src="item.avatar" mode="aspectFill" />
         </view>
@@ -30,17 +20,28 @@
 </template>
 
 <script setup lang="ts">
+import { getUserInfo } from '../utils'
+
+interface MessageItem {
+  userid: string
+  avatar: string
+  message: string
+  nickname?: string
+}
+
 defineProps({
-  oppositeDialogueList: [],
-  myDialogueList: [],
+  messageListData: {
+    type: Array as () => MessageItem[],
+    default: () => [],
+  },
 })
 
 // 跳转到详情页
 const handleDialogueDetails = (item): void => {
-  const { id, name } = item || {}
+  const { userid, nickname } = item || {}
   uni.vibrateShort()
   uni.navigateTo({
-    url: `/copywriter-subpackage/dialogue-detail/index?id=${id}&name=${name}`,
+    url: `/copywriter-subpackage/dialogue-detail/index?_id=${userid}&nickname=${nickname}`,
   })
 }
 </script>
@@ -82,12 +83,6 @@ const handleDialogueDetails = (item): void => {
         }
       }
     }
-  }
-
-  .my {
-    padding: 24rpx;
-    border-radius: 30rpx;
-    margin-bottom: 24rpx;
 
     .header {
       display: flex;

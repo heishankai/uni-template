@@ -52,10 +52,6 @@ const onRefresherrefresh = async (): Promise<void> => {
   // 关闭动画
   isTriggered.value = false
 }
-
-// const handleSubscribe = (): void => {
-//   subscribeModalRef.value.subscribeModalOpen.open()
-// }
 </script>
 
 <style lang="scss">

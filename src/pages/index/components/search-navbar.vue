@@ -1,5 +1,14 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { tabList } from '../utils'
+import { getSocket } from '@/utils/socket'
+
+const socket = getSocket()
+const userData = ref<any>({})
+
+socket?.on('orderinform', (msg) => {
+  userData.value = msg.data
+})
 
 defineProps({
   selectedTab: {
@@ -36,10 +45,7 @@ const handleInputChange = (): void => {
           <view class="title2">
             <view class="title1">
               <view class="title">
-                <image
-                  src="https://yanxuan-item.nosdn.127.net/4aec56f5a1af7c3538e47acf301ad15b.png"
-                  mode="scaleToFill"
-                />
+                <image v-if="userData?.avatar" :src="userData?.avatar" mode="scaleToFill" />
                 <uni-icons
                   class="smallcircle"
                   type="smallcircle-filled"

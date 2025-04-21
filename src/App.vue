@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { initSocket } from '@/utils/socket'
 import { onLaunch, onShow, onHide, onLoad, onUnload, onReady } from '@dcloudio/uni-app'
 
 onLaunch(() => {
+  initSocket()
   console.log('监听小程序初始化，全局只触发一次')
 })
 

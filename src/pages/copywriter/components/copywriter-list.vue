@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
+import { onLoad } from '@dcloudio/uni-app'
 // services
 import { getAllWriterService, CollectAndUncollectService, LikeOrUnlikeService } from '../service'
 
@@ -95,7 +95,7 @@ const resetData = (): void => {
 }
 
 // 组件挂载完毕
-onShow(() => {
+onLoad(() => {
   getHomeGoodsGuessLikeData()
 })
 

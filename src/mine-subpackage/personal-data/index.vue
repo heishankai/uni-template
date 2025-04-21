@@ -90,16 +90,10 @@ const profile = ref({
 const onSubmit = async (): Promise<void> => {
   uni.showLoading({ title: '加载中', mask: true })
 
-  const { data, message } = await updateUserInfoService({
+  const { data } = await updateUserInfoService({
     ...profile.value,
     openid: userInfo.openid,
   })
-
-  if (message !== 'success') {
-    uni.showToast({ title: message, icon: 'none' })
-    uni.hideLoading()
-    return
-  }
 
   profile.value = data
   set(data)
