@@ -1,7 +1,13 @@
 <template>
   <view class="container">
     <notice />
-    <scroll-view class="scroll-view" scroll-y>
+    <scroll-view
+      class="scroll-view"
+      scroll-y
+      :refresher-enabled="true"
+      :refresher-triggered="isRefreshing"
+      @refresherrefresh="onRefresh"
+    >
       <view class="message-list">
         <view
           class="item"
@@ -22,27 +28,36 @@
         </view>
       </view>
     </scroll-view>
-    <tabbar selected="3"></tabbar>
+    <tabbar selected="3" />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import moment from 'moment'
-import { onShow } from '@dcloudio/uni-app'
+import { onLoad } from '@dcloudio/uni-app'
 // service
-import { getChatRoomListService } from './service.ts'
+import { getChatRoomListService } from './service'
 // components
 import tabbar from '@/components/custom-tab-bar.vue'
 import notice from './components/notice.vue'
 
 // 聊天消息
 const chatRoomListData = ref<any[]>([])
+const isRefreshing = ref(false)
 
 // 获取用户聊天列表
 const getChatRoomList = async (): Promise<void> => {
   const { data } = await getChatRoomListService()
   chatRoomListData.value = data
+}
+
+// 下拉刷新
+const onRefresh = async (): Promise<void> => {
+  uni.showToast({ title: '加载中...', icon: 'loading', duration: 500 })
+  isRefreshing.value = true
+  await getChatRoomList()
+  setTimeout(() => (isRefreshing.value = false), 500) // 稍微延迟更平滑
 }
 
 // 跳转到详情页
@@ -54,7 +69,7 @@ const handleDialoguePage = (item): void => {
   })
 }
 
-onShow(() => {
+onLoad(() => {
   getChatRoomList()
 })
 </script>
@@ -96,7 +111,7 @@ page {
 
         .years-work {
           font-size: 26rpx;
-          list-style: 30rpx;
+          line-height: 30rpx;
           color: $uni-text-color-placeholder;
         }
 

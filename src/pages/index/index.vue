@@ -22,7 +22,6 @@ import { ref } from 'vue'
 // components
 import tabbar from '@/components/custom-tab-bar.vue'
 import searchNavbar from './components/search-navbar.vue'
-import customPopup from './components/custom-popup.vue'
 import storyList from './components/story-list.vue'
 // utils
 import { useGuessList } from './utils'
