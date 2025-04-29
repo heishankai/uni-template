@@ -11,6 +11,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-laba:before {
+  content: '\e617';
+}
+
+.icon-laba1:before {
+  content: '\e632';
+}
+
+.icon-laba2:before {
+  content: '\e654';
+}
+
 .icon-wushuju:before {
   content: '\e616';
 }

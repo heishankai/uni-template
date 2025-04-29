@@ -35,7 +35,7 @@
       <button @click="handleSubscribe">立即预约</button>
     </view>
     <!-- 预约弹出 -->
-    <subscribe-modal ref="subscribeModalRef" />
+    <subscribe-modal ref="subscribeModalRef" :copywriterInfo="copywriterInfo" />
   </view>
 </template>
 

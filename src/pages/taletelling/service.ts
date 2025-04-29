@@ -22,3 +22,11 @@ export const getRecordListService = (): Promise<any> => {
     url: '/get-record-list',
   })
 }
+
+// 获取用户条数
+export const getUserCountService = (): Promise<any> => {
+  return request({
+    method: 'GET',
+    url: '/user/record-length',
+  })
+}

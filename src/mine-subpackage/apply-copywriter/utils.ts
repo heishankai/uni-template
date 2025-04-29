@@ -7,6 +7,11 @@ export const genderList = [
   { value: '2', name: '女' },
 ]
 
+export const selectedWritersList = [
+  { value: '1', name: '是' },
+  { value: '2', name: '否' },
+]
+
 // 必填项定义
 export const requiredFields = [
   { key: 'avatar', message: '请上传头像' },
@@ -21,6 +26,7 @@ export const requiredFields = [
   { key: 'job', message: '请选择职业' },
   { key: 'hobby', message: '请选择爱好' },
   { key: 'resume_images', message: '请上传简历图片' },
+  { key: 'writerPayment', message: '请填写稿酬' },
 ]
 
 /**

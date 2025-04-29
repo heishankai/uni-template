@@ -46,12 +46,13 @@ import recordConfirm from './components/record-confirm.vue'
 // utils
 import { useTimeout, useRecorder } from './utils'
 // service
-import { getRecordListService } from './service'
+import { getRecordListService, getUserCountService } from './service'
 
 const isRecording = ref<boolean>(false)
 const recordList = ref<{ src: string; time: string }[]>([])
 const recordingTime = ref('00:00')
 const subscribeModalOpen = ref<any>(false)
+const record_length = ref<number>(0)
 
 const { startRecord, stopRecord }: any = useRecorder(recordList, recordingTime) || {}
 
@@ -70,9 +71,9 @@ const startRecording = (): void => {
     return
   }
 
-  if (recordList?.value?.length >= 3) {
+  if (recordList?.value?.length >= record_length.value) {
+    // 条数上限
     subscribeModalOpen.value.subscribeModalOpen.open()
-    // uni.showToast({ title: '每天最多只能录制3段哟', icon: 'none' })
     return
   }
 
@@ -107,8 +108,15 @@ onHide(() => {
   stopTimeout()
 })
 
+// 获取用户发语音的条数
+const getUserCount = async (): Promise<void> => {
+  const res = await getUserCountService()
+  record_length.value = res.data.record_length
+}
+
 onShow(() => {
   getRecordListData()
+  getUserCount()
 })
 </script>
 

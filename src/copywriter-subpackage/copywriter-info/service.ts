@@ -32,3 +32,31 @@ export const LikeOrUnlikeService = (params: { writerId: string }): Promise<any> 
     data: params,
   })
 }
+
+/**
+ * 创建订单
+ */
+export const addReserveOrderService = (params: {
+  orderAmount: number | string
+  orderTimePeriod: any
+  copywriter_name: string
+  copywriter_avatar: string
+  copywriter_id: string
+}): Promise<any> => {
+  return request({
+    method: 'POST',
+    url: '/add-reserve-order',
+    data: params,
+  })
+}
+
+/**
+ * 查询订单是否支付成功
+ */
+export const orderSuccessNotifyService = (params: { outTradeNo: string }): Promise<any> => {
+  return request({
+    method: 'POST',
+    url: '/order-success-notify',
+    data: params,
+  })
+}

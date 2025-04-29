@@ -22,3 +22,25 @@ export const getWriterInfoService = (params: { openid: string }): Promise<any> =
     data: params,
   })
 }
+
+/**
+ * 支付成为精选撰稿人
+ */
+export const becomeSelectedWriterService = (params: { orderAmount: number }): Promise<any> => {
+  return request({
+    method: 'POST',
+    url: '/become-selected-writer',
+    data: params,
+  })
+}
+
+/**
+ * 核实是否支付成功
+ */
+export const checkPaymentService = (params: { outTradeNo: string }): Promise<any> => {
+  return request({
+    method: 'POST',
+    url: '/become-selected-writer/success',
+    data: params,
+  })
+}

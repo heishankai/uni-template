@@ -1,12 +1,10 @@
 <template>
   <view class="container">
     <scroll-view class="scroll-view">
-      <template>
-        <!-- 进度条 -->
-        <rate-bar :rate="rate" />
-        <!-- 表单 -->
-        <form-list :rate="rate" ref="formlistRef" />
-      </template>
+      <!-- 进度条 -->
+      <rate-bar :rate="rate" />
+      <!-- 表单 -->
+      <form-list :rate="rate" ref="formlistRef" />
     </scroll-view>
     <!-- 底部按钮 -->
     <view class="footer">

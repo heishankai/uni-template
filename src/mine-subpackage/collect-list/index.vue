@@ -63,9 +63,11 @@ const handleUpdateWriterListdata = (): any => getCollectList()
 // 获取收藏列表
 const getCollectList = async (): Promise<void> => {
   uni.showLoading({ title: '加载中...', mask: true })
+
   const { data } = await collectListService()
   allWriterListdata.value = data || []
   writerListdata.value = data || []
+
   uni.hideLoading()
 }
 

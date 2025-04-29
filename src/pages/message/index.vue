@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import moment from 'moment'
-import { onLoad } from '@dcloudio/uni-app'
+import { onShow } from '@dcloudio/uni-app'
 // service
 import { getChatRoomListService } from './service'
 // components
@@ -62,14 +62,14 @@ const onRefresh = async (): Promise<void> => {
 
 // 跳转到详情页
 const handleDialoguePage = (item): void => {
-  const { userid, nickname } = item || {}
+  const { toUserid, nickname } = item || {}
   uni.vibrateShort()
   uni.navigateTo({
-    url: `/copywriter-subpackage/dialogue/index?_id=${userid}&nickname=${nickname}`,
+    url: `/copywriter-subpackage/dialogue/index?_id=${toUserid}&nickname=${nickname}`,
   })
 }
 
-onLoad(() => {
+onShow(() => {
   getChatRoomList()
 })
 </script>

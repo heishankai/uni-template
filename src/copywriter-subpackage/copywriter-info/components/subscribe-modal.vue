@@ -1,7 +1,7 @@
 <template>
   <uni-popup ref="subscribeModalOpen" background-color="#f7f7fa" type="bottom">
     <view class="title">
-      <text>¥ 9.9</text>
+      <text>¥ {{ localCopywriterInfo || 0 }}</text>
       <uni-icons type="close" size="28" color="#67676e" @click="handleClose" />
     </view>
     <scroll-view scroll-y>
@@ -26,21 +26,71 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+// service
+import { addReserveOrderService, orderSuccessNotifyService } from '../service'
+
+interface CopywriterInfo {
+  writerPayment: number
+  nickname: string
+  avatar: string
+  _id: string
+}
+
+const props = defineProps<{
+  copywriterInfo: CopywriterInfo
+}>()
 
 const subscribeModalOpen = ref<any>(false)
 const selectedTimes = ref<Set<string>>(new Set()) // 使用 Set 存储已选择的时间
+const localCopywriterInfo = ref<any>(0)
 
-// 支付按钮点击处理
-const handlePay = (): void => {
-  if (selectedTimes.value.size > 0) {
-    console.log('支付时间:', selectedTimes.value)
-    // 轻微震动效果
-    uni.vibrateShort()
-    uni.showToast({ title: '支付成功', icon: 'success' })
-    handleClose()
-  } else {
+// 提交订单
+const handlePay = async (): Promise<void> => {
+  uni.vibrateShort()
+  const selectedTimesArray = Array.from(selectedTimes.value)
+
+  if (!selectedTimesArray.length) {
     uni.showToast({ title: '请先选择时间', icon: 'none' })
+    return
   }
+  uni.showLoading({ title: '支付中...', mask: true })
+
+  // 调用服务端接口 - 获取支付参数
+  const { data, message } = await addReserveOrderService({
+    orderAmount: localCopywriterInfo.value,
+    orderTimePeriod: selectedTimesArray,
+    copywriter_name: props.copywriterInfo.nickname,
+    copywriter_avatar: props.copywriterInfo.avatar,
+    copywriter_id: props.copywriterInfo._id,
+  })
+
+  if (message !== 'SUCCESS') {
+    uni.showToast({ title: message, icon: 'none' })
+    return
+  }
+
+  // 调用支付接口
+  uni.requestPayment({
+    provider: 'wxpay',
+    orderInfo: '1',
+    ...data,
+    success: async () => {
+      const res = await orderSuccessNotifyService({ outTradeNo: data.out_trade_no })
+      console.log(res, 'res')
+
+      uni.showToast({ title: '支付成功', icon: 'none' })
+      localCopywriterInfo.value = 0
+      selectedTimes.value = new Set()
+      handleClose()
+      uni.hideLoading()
+    },
+    fail: async () => {
+      const res = await orderSuccessNotifyService({ outTradeNo: data.out_trade_no })
+      console.log(res, 'res')
+      uni.hideLoading()
+    },
+  })
+  uni.hideLoading()
 }
 
 // 选择时间处理
@@ -52,7 +102,14 @@ const selectTime = (date: string, time: string): void => {
   } else {
     selectedTimes.value.add(slot) // 否则添加到已选时间
   }
-  console.log('选择时间:', Array.from(selectedTimes.value))
+  const selectedTimeArray = Array.from(selectedTimes.value)
+
+  // 时间段的费用
+  const originalPayment = props.copywriterInfo.writerPayment // 保存初始值
+  localCopywriterInfo.value = (selectedTimeArray?.length * originalPayment)?.toFixed(2)
+
+  console.log('选择时间:', selectedTimeArray)
+  console.log(props.copywriterInfo, 'props.copywriterInfo')
 }
 
 // 判断时间是否已被选中

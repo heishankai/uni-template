@@ -8,14 +8,14 @@
         class="item"
         v-for="item in swiperList"
         :key="item.id"
-        @click="handleCopywriterPage(item.id)"
+        @click="handleCopywriterPage(item)"
         :style="{
-          background: `url(${item?.picture}) no-repeat center center`,
+          background: `url(${item?.avatar}) no-repeat center center`,
           backgroundSize: 'cover',
         }"
       >
         <view class="info">
-          <view class="name">{{ item.name }}</view>
+          <view class="name">{{ item.nickname }}</view>
         </view>
       </view>
     </scroll-view>
@@ -24,50 +24,32 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
+// service
+import { getAllWriterByTypeService } from '../service'
 
 // 跳转到详情页
-const handleCopywriterPage = (id): void => {
+const handleCopywriterPage = (item): void => {
+  const { openid, nickname } = item ?? {}
   uni.vibrateShort()
   uni.navigateTo({
-    url: `/copywriter-subpackage/copywriter-info/index?id=${id}`,
+    url: `/copywriter-subpackage/copywriter-info/index?openid=${openid}&nickname=${nickname}`,
   })
 }
 
-const swiperList = ref([
-  {
-    desc: '我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯',
-    id: '1477017',
-    name: '陈淑雅',
-    record: 115,
-    yearsWork: 6,
-    picture: 'https://yanxuan-item.nosdn.127.net/4aec56f5a1af7c3538e47acf301ad15b.png',
-    top: 'TOP1',
-    collectNumber: 100,
-    praiseNumber: 200,
-  },
-  {
-    desc: '我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯',
-    id: '1477017',
-    name: '李凯',
-    record: 95,
-    yearsWork: 7,
-    picture: 'https://yanxuan-item.nosdn.127.net/0e1681ab3a4a5aaf185f0bb123f07f99.jpg',
-    top: 'TOP2',
-    collectNumber: 80,
-    praiseNumber: 2020,
-  },
-  {
-    desc: '我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯我的简介来咯',
-    id: '1477017',
-    name: '唐玄奘',
-    record: 30,
-    yearsWork: 3,
-    picture: 'https://yanxuan-item.nosdn.127.net/0d8fe495fe82abbdf8826c4fd1e1e77b.png',
-    top: 'TOP3',
-    collectNumber: 80,
-    praiseNumber: 2020,
-  },
-])
+const swiperList = ref<any>([])
+
+// 获取数据
+const getSwiperList = async (): Promise<void> => {
+  // 获取数据
+  const { data } = await getAllWriterByTypeService()
+  console.log(data, 'res')
+  swiperList.value = data
+}
+
+onShow(() => {
+  getSwiperList()
+})
 </script>
 
 <style lang="scss" scoped>

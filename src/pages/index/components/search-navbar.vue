@@ -2,11 +2,18 @@
 import { ref } from 'vue'
 import { tabList } from '../utils'
 import { getSocket } from '@/utils/socket'
+import { onShow } from '@dcloudio/uni-app'
+import { useUserInfoStore } from '@/stores'
+const { userInfo } = useUserInfoStore()
 
 const socket = getSocket()
-const userData = ref<any>({})
+
+const userData = ref<any>({
+  avatar: null,
+})
 
 socket?.on('orderinform', (msg) => {
+  console.log(msg.data, 'msg.data')
   userData.value = msg.data
 })
 
@@ -34,6 +41,26 @@ const handleInputChange = (): void => {
     url: `/copywriter-subpackage/search-user/index`,
   })
 }
+
+// 跳转到人员中心页面
+const handleGoinfoData = (): void => {
+  console.log(userData.value, 'userData.value')
+  const { userid, nickname } = userData.value || {}
+  if (!userid) {
+    return
+  }
+
+  uni.vibrateShort()
+  uni.navigateTo({
+    url: `/copywriter-subpackage/dialogue-detail/index?_id=${userid}&nickname=${nickname}`,
+  })
+}
+
+onShow(() => {
+  userData.value.avatar = userInfo.avatar
+  userData.value.userid = userInfo._id
+  userData.value.nickname = userInfo.nickname
+})
 </script>
 
 <template>
@@ -44,13 +71,15 @@ const handleInputChange = (): void => {
         <view class="title3">
           <view class="title2">
             <view class="title1">
-              <view class="title">
+              <view class="title" @click="handleGoinfoData">
                 <image v-if="userData?.avatar" :src="userData?.avatar" mode="scaleToFill" />
                 <uni-icons
+                  v-if="userData?.avatar"
                   class="smallcircle"
-                  type="smallcircle-filled"
+                  custom-prefix="iconfont"
+                  type="icon-laba2"
                   color="#509F2C"
-                  size="24"
+                  size="28"
                 />
               </view>
             </view>
@@ -190,8 +219,8 @@ const handleInputChange = (): void => {
 
     .smallcircle {
       position: absolute;
-      top: -5rpx;
-      right: -20rpx;
+      top: 0rpx;
+      right: -33rpx;
       animation: blink 2.5s infinite ease-in-out;
     }
 

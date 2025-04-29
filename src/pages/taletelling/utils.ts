@@ -67,42 +67,86 @@ export const useRecorder = (
   onShow(() => {
     recorderManager = uni.getRecorderManager()
     recorderManager.onStop((res) => {
-      console.log('录音结束，文件路径:', res.tempFilePath)
       // 先捕获当前的录音时间
       const finalTime = recordingTime.value
 
-      uni.uploadFile({
-        url: uploadFileUrl,
-        filePath: res?.tempFilePath,
-        name: 'file',
-        async success(res) {
-          const { data } = JSON.parse(res?.data)
-          console.log(data, 'data')
+      uni.showModal({
+        content: '确认上传吗？',
+        success: async function (response) {
+          const { confirm } = response
+          if (!confirm) {
+            return
+          }
+          uni.showLoading({ title: '上传中...', mask: true })
+          uni.uploadFile({
+            url: uploadFileUrl,
+            filePath: res?.tempFilePath,
+            name: 'file',
+            async success(res) {
+              try {
+                const { data } = JSON.parse(res?.data)
 
-          const { message } = await saveRecordService({
-            recordList: [
-              {
-                src: data,
-                time: finalTime,
-              },
-            ],
+                const { message } = await saveRecordService({
+                  recordList: [{ src: data, time: finalTime }],
+                })
+
+                uni.showToast({ title: message, icon: 'none' })
+
+                recordList.value.push({
+                  src: data,
+                  time: finalTime,
+                })
+
+                // 推入录音信息后再重置录音时间
+                recordingTime.value = '00:00'
+              } catch {
+                uni.hideLoading()
+              } finally {
+                uni.hideLoading()
+              }
+            },
+            fail(err) {
+              console.error('上传失败:', err)
+              uni.hideLoading()
+            },
           })
-
-          uni.showToast({ title: message, icon: 'none' })
-
-          recordList.value.push({
-            src: data,
-            time: finalTime,
-          })
-
-          // 推入录音信息后再重置录音时间
-          recordingTime.value = '00:00'
-        },
-        fail(err) {
-          console.error('上传失败:', err)
-          uni.showToast({ title: '上传失败', icon: 'none' })
         },
       })
+
+      // uni.uploadFile({
+      //   url: uploadFileUrl,
+      //   filePath: res?.tempFilePath,
+      //   name: 'file',
+      //   async success(res) {
+      //     uni.showLoading({ title: '上传中...', mask: true })
+      //     const { data } = JSON.parse(res?.data)
+
+      //     const { message } = await saveRecordService({
+      //       recordList: [
+      //         {
+      //           src: data,
+      //           time: finalTime,
+      //         },
+      //       ],
+      //     })
+
+      //     uni.showToast({ title: message, icon: 'none' })
+
+      //     recordList.value.push({
+      //       src: data,
+      //       time: finalTime,
+      //     })
+
+      //     // 推入录音信息后再重置录音时间
+      //     recordingTime.value = '00:00'
+      //     uni.hideLoading()
+      //   },
+      //   fail(err) {
+      //     console.error('上传失败:', err)
+      //     uni.showToast({ title: '上传失败', icon: 'none' })
+      //     uni.hideLoading()
+      //   },
+      // })
     })
   })
 

@@ -8,7 +8,7 @@
     borderRadius="12px"
   >
     <view class="content">
-      <view>每天最多只能录制3段哟</view>
+      <view>录制已达上限</view>
       <view class="top-up" @click="hadleTopUp">
         <text>前往充值</text>
         <uni-icons custom-prefix="iconfont" type="icon-jinru" color="#00cec9" size="48" />

@@ -93,6 +93,23 @@
     </view>
     <view v-show="rate === 3">
       <view class="form-item">
+        <text>撰稿费用/小时</text>
+        <input type="number" placeholder="请填写撰稿费用" v-model.number="profile.writerPayment" />
+      </view>
+      <view class="form-item">
+        <text>是否成为精选撰稿人</text>
+        <radio-group @change="onSelectedWritersChange">
+          <label class="radio" v-for="item in selectedWritersList" :key="item.value">
+            <radio
+              :value="item.value"
+              color="#00cec9"
+              :checked="profile?.selectedWriters === item.value"
+            />
+            <text>{{ item.name }}</text>
+          </label>
+        </radio-group>
+      </view>
+      <view class="form-item">
         <text>简历</text>
         <view v-if="profile?.resume_images?.length" class="resume_images-list">
           <view v-for="(item, index) in profile?.resume_images" :key="item" class="image-container">
@@ -123,9 +140,9 @@ import { useUserInfoStore } from '@/stores'
 // utils
 import { getLocation } from '@/utils'
 import { uploadImages } from '@/utils/upload'
-import { specialtyList, jobList, hobbyList, genderList } from '../utils'
+import { specialtyList, jobList, hobbyList, genderList, selectedWritersList } from '../utils'
 // services
-import { getWriterInfoService } from '../service'
+import { getWriterInfoService, becomeSelectedWriterService, checkPaymentService } from '../service'
 
 defineProps({
   rate: { type: Number, default: 1 },
@@ -156,8 +173,12 @@ const profile = ref<any>({
   job: undefined,
   // 爱好
   hobby: undefined,
+  // 撰稿费用
+  writerPayment: null,
   // 简历图片列表
   resume_images: [],
+  // 是否成为精选撰稿人
+  selectedWriters: null,
 })
 
 // 生日选择
@@ -223,11 +244,62 @@ const getWriterInfoData = async (): Promise<void> => {
     ...profile.value,
     ...userInfo,
     ...data,
+    selectedWriters: data?.isSelectedWriters ? '1' : '2',
   }
 
   if (!data?.city) {
     handleGetCity()
   }
+}
+
+// 是否成为精选撰稿人
+const onSelectedWritersChange = async (e: any): Promise<void> => {
+  console.log(e.detail.value, 'e.detail.value')
+
+  if (e.detail.value === '2') {
+    profile.value.selectedWriters = e.detail.value
+    return
+  }
+  uni.showLoading({ title: '支付中...', mask: true })
+  // 调用服务端接口 - 获取支付参数
+  const { data, message } = await becomeSelectedWriterService({
+    orderAmount: 0.01,
+  })
+
+  if (message !== 'SUCCESS') {
+    uni.showToast({ title: message, icon: 'none' })
+    return
+  }
+
+  // 调用支付接口
+  uni.requestPayment({
+    provider: 'wxpay',
+    orderInfo: '1',
+    ...data,
+    success: async () => {
+      const { data: successData, message } = await checkPaymentService({
+        outTradeNo: data.out_trade_no,
+      })
+
+      uni.showToast({ title: '支付成功', icon: 'none' })
+      uni.hideLoading()
+
+      if (message === '支付成功') {
+        profile.value.selectedWriters = successData
+      }
+    },
+    fail: async () => {
+      const { data: successData, message } = await checkPaymentService({
+        outTradeNo: data.out_trade_no,
+      })
+      if (message === '支付成功') {
+        profile.value.selectedWriters = successData
+      }
+      uni.hideLoading()
+    },
+  })
+
+  uni.hideLoading()
 }
 
 onLoad(() => {

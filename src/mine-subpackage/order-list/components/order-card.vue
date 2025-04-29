@@ -1,23 +1,28 @@
 <template>
-  <view class="order-item" v-for="orderInfo in orderInfoList" :key="orderInfo.orderNumber">
-    <view class="item-header">
-      <view>
-        <text> 订单编号： </text>
-        <text>{{ orderInfo.orderNumber }}</text>
-      </view>
-      <view>{{ orderInfo.statuName }}</view>
-    </view>
-    <view class="item-body">
-      <image src="https://img.yzcdn.cn/vant/cat.jpeg" mode="scaleToFill" />
-      <view class="body-info">
-        <view>{{ orderInfo.copywriterName }}</view>
+  <view class="order-list">
+    <view class="order-item" v-for="orderInfo in orderInfoList" :key="orderInfo.orderNumber">
+      <view class="item-header">
         <view>
-          <text>订单金额：</text>
-          <text class="order-time">{{ orderInfo.money }}￥</text>
+          <text>订单编号：</text>
+          <text>{{ orderInfo.orderNumber }}</text>
         </view>
-        <view>
-          <text>下单时间：</text>
-          <text class="order-time">{{ orderInfo.time }}</text>
+        <view>{{ orderInfo.paymentStatus === '002' ? '已支付' : '' }}</view>
+      </view>
+      <view class="item-body">
+        <image :src="orderInfo.copywriter_avatar" mode="scaleToFill" />
+        <view class="body-info">
+          <view>
+            <text>撰稿人名称：</text>
+            <text class="order-time">{{ orderInfo.copywriter_name }}</text>
+          </view>
+          <view>
+            <text>订单金额：</text>
+            <text class="order-time">{{ orderInfo.orderAmount }}￥</text>
+          </view>
+          <view>
+            <text>下单时间：</text>
+            <text class="order-time">{{ orderInfo.orderTime }}</text>
+          </view>
         </view>
       </view>
     </view>
@@ -25,17 +30,27 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  orderInfoList: Array,
-  default: [],
-})
+defineProps<{
+  orderInfoList: {
+    orderNumber: string
+    paymentStatus: string
+    copywriter_name: string
+    orderAmount: number
+    orderTime: string
+    orderTimePeriod: [] // 预约时间段
+    copywriter_avatar: string
+  }[]
+}>()
 </script>
 
 <style lang="scss" scoped>
+.order-list {
+  margin: 24rpx;
+}
 .order-item {
   padding: 24rpx;
   border-radius: 12rpx;
-  background-color: $uni-text-color-inverse;
+  background-color: #f7f7fa;
   margin-bottom: 30rpx;
 }
 
@@ -43,7 +58,7 @@ defineProps({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 32rpx;
+  font-size: 28rpx;
   font-weight: 500;
   padding-bottom: 24rpx;
   color: $uni-text-color-placeholder;

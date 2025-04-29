@@ -32,3 +32,13 @@ export const LikeOrUnlikeService = (params: { writerId: string }): Promise<any> 
     data: params,
   })
 }
+
+/**
+ * 获取精选撰稿人列表
+ */
+export const getAllWriterByTypeService = (): Promise<any> => {
+  return request({
+    method: 'GET',
+    url: '/get-selected-writers',
+  })
+}
