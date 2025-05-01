@@ -33,12 +33,14 @@
                 mode="aspectFill"
               />
               <image v-else src="@/static/copywriter-sbuPages/praise.png" mode="aspectFill" />
+              <text>{{ item?.likeCount }}</text>
             </button>
           </view>
         </view>
-        <view @click="handleShare(item._id)">
-          <button open-type="share">
-            <uni-icons custom-prefix="iconfont" type="icon-fenxiang" color="#808080" size="20" />
+        <view @click="handleShare(item)">
+          <button open-type="share" class="share">
+            <uni-icons custom-prefix="iconfont" type="icon-fenxiang" color="#808080" size="18" />
+            <text>分享</text>
           </button>
         </view>
       </view>
@@ -48,16 +50,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 // services
 import { getAllWriterService, CollectAndUncollectService, LikeOrUnlikeService } from '../service'
 
-// 猜你喜欢的列表
 const guessList = ref<any[]>([])
-
-// 已结束标记
 const finish = ref(false)
-
+const currentShare = ref<any>({})
 const pageParams = ref<{ page: number; limit: number }>({
   page: 1,
   limit: 10,
@@ -70,8 +69,6 @@ const getHomeGoodsGuessLikeData = async (): Promise<void> => {
     return uni.showToast({ icon: 'none', title: '没有更多数据~' })
   }
   const { data }: any = await getAllWriterService({ ...pageParams.value })
-
-  console.log(data, 'result')
 
   // 数组追加
   guessList.value.push(...(data?.data ?? []))
@@ -143,10 +140,27 @@ const handlePraise = async (writerId): Promise<void> => {
 }
 
 // 分享
-const handleShare = (id): void => {
+const handleShare = (item): void => {
   uni.vibrateShort()
-  console.log(id)
+  currentShare.value = item
 }
+
+// 监听分享事件
+onShareAppMessage(() => {
+  if (!currentShare.value) {
+    return {
+      title: '每日推荐撰稿人',
+      path: '/pages/index/index', // 默认首页或其它路径
+    }
+  }
+
+  const { openid, nickname } = currentShare.value ?? {}
+
+  return {
+    title: '撰稿人' + nickname,
+    path: `/copywriter-subpackage/copywriter-info/index?openid=${openid}&nickname=${nickname}`, // 指向详情页并带参数
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -227,6 +241,17 @@ const handleShare = (id): void => {
 
         &::after {
           border: none;
+        }
+      }
+
+      .share {
+        display: flex;
+        align-items: center;
+        font-size: 28rpx;
+        color: $uni-text-color-placeholder;
+
+        text {
+          margin-left: 12rpx;
         }
       }
 
