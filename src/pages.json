@@ -144,6 +144,12 @@
 					}
 				},
 				{
+					"path": "auth-writer/index",
+					"style": {
+						"navigationBarTitleText": "认证撰稿人"
+					}
+				},
+				{
 					"path": "personal-data/index",
 					"style": {
 						"navigationBarTitleText": "个人信息"

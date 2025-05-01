@@ -8,10 +8,34 @@
       <view> 成为撰稿人 </view>
       <uni-icons type="right" size="18" color="#6c6c6c" />
     </navigator>
+    <view v-show="isWriter">
+      <navigator url="/mine-subpackage/auth-writer/index" hover-class="navigator-hover">
+        <view> 认证撰稿人 </view>
+        <uni-icons type="right" size="18" color="#6c6c6c" />
+      </navigator>
+    </view>
   </view>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
+// store
+import { useUserInfoStore } from '@/stores'
+// service
+import { getAuthwriterService } from '../service'
+
+const isWriter = ref<any>(false)
+
+onShow(() => {
+  const { userInfo } = useUserInfoStore()
+  if (userInfo?.openid) {
+    getAuthwriterService({ openid: userInfo?.openid }).then((res: any) => {
+      isWriter.value = res.data
+    })
+  }
+})
+</script>
 
 <style lang="scss" scoped>
 .title-container {
