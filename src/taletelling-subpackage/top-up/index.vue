@@ -36,7 +36,7 @@ import { ref } from 'vue'
 // store
 import { useUserInfoStore } from '@/stores'
 // service
-import { topUpRecordLengthService, topUpRecordLengthSeccessService } from './service'
+import { topUpRecordLengthService } from './service'
 
 const { userInfo } = useUserInfoStore()
 const selectedCardIndex = ref<number | null>(null)
@@ -75,7 +75,6 @@ const onTopUp = async (): Promise<void> => {
     return
   }
   const { orderAmount, count } = priceList.value[selectedCardIndex.value]
-  console.log('Selected item:', { orderAmount, count })
 
   uni.showLoading({ title: '支付中...', mask: true })
 
@@ -95,20 +94,10 @@ const onTopUp = async (): Promise<void> => {
     provider: 'wxpay',
     orderInfo: '1',
     ...data,
-    success: async () => {
-      const { data: successData, message } = await topUpRecordLengthSeccessService({
-        outTradeNo: data.out_trade_no,
-        count,
-      })
-
-      uni.showToast({ title: '支付成功', icon: 'none' })
+    success: () => {
       uni.hideLoading()
-
-      if (message === '支付成功') {
-        userInfo.record_length = successData
-      }
     },
-    fail: async () => {
+    fail: () => {
       uni.hideLoading()
     },
   })
