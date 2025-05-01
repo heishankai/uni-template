@@ -85,6 +85,7 @@ page {
 .scroll-view {
   flex: 1;
   overflow: hidden;
+  margin-bottom: env(safe-area-inset-bottom);
 }
 
 .navbar {

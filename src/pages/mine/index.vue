@@ -1,16 +1,14 @@
 <template>
   <view class="container">
     <scroll-view class="scroll-view" scroll-y>
-      <template>
-        <!-- 顶部 -->
-        <mine-header />
-        <!-- 卡片 -->
-        <mine-main />
-        <!-- 标题 -->
-        <mine-title />
-        <!-- 商品 -->
-        <mine-commodity />
-      </template>
+      <!-- 顶部 -->
+      <mine-header />
+      <!-- 卡片 -->
+      <mine-main />
+      <!-- 标题 -->
+      <mine-title />
+      <!-- 商品 -->
+      <mine-commodity />
     </scroll-view>
     <tabbar selected="4"></tabbar>
   </view>

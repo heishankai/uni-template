@@ -9,10 +9,23 @@
       <view v-if="info?.age">年龄：{{ info?.age }}</view>
       <view v-if="info?.city">城市：{{ info?.city }}</view>
     </view>
+    <view class="record-list">
+      <trumpet-animation
+        v-for="(item, index) in info.recordList"
+        :key="index"
+        :size="24"
+        color="#808080"
+        :src="item?.src"
+        :time="item?.time"
+      />
+    </view>
   </view>
 </template>
 
 <script setup lang="ts">
+// components
+import trumpetAnimation from '@/components/trumpet-animation.vue'
+
 defineProps<{
   info: {
     nickname: string
@@ -21,6 +34,7 @@ defineProps<{
     gender: string
     age: number
     city: string
+    recordList: { time: string; src: string }[]
   }
 }>()
 </script>
@@ -53,6 +67,10 @@ defineProps<{
       color: $uni-text-color-placeholder;
       line-height: 60rpx;
     }
+  }
+
+  .record-list {
+    margin-left: 48rpx;
   }
 }
 </style>

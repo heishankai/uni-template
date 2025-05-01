@@ -20,6 +20,10 @@
             <text class="order-time">{{ orderInfo.orderAmount }}￥</text>
           </view>
           <view>
+            <text>预约时间：</text>
+            <text class="order-time">{{ orderInfo.orderTimePeriod?.join('，') }}</text>
+          </view>
+          <view>
             <text>下单时间：</text>
             <text class="order-time">{{ orderInfo.orderTime }}</text>
           </view>
@@ -71,7 +75,7 @@ defineProps<{
 
   image {
     width: 180rpx;
-    height: 180rpx;
+    height: 190rpx;
     border-radius: 12rpx;
   }
 
