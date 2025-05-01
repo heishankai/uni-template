@@ -142,7 +142,7 @@ import { getLocation } from '@/utils'
 import { uploadImages } from '@/utils/upload'
 import { specialtyList, jobList, hobbyList, genderList, selectedWritersList } from '../utils'
 // services
-import { getWriterInfoService, becomeSelectedWriterService, checkPaymentService } from '../service'
+import { getWriterInfoService, becomeSelectedWriterService } from '../service'
 
 defineProps({
   rate: { type: Number, default: 1 },
@@ -260,7 +260,9 @@ const onSelectedWritersChange = async (e: any): Promise<void> => {
     profile.value.selectedWriters = e.detail.value
     return
   }
+
   uni.showLoading({ title: '支付中...', mask: true })
+
   // 调用服务端接口 - 获取支付参数
   const { data, message } = await becomeSelectedWriterService({
     orderAmount: 0.01,
@@ -276,25 +278,10 @@ const onSelectedWritersChange = async (e: any): Promise<void> => {
     provider: 'wxpay',
     orderInfo: '1',
     ...data,
-    success: async () => {
-      const { data: successData, message } = await checkPaymentService({
-        outTradeNo: data.out_trade_no,
-      })
-
-      uni.showToast({ title: '支付成功', icon: 'none' })
+    success: () => {
       uni.hideLoading()
-
-      if (message === '支付成功') {
-        profile.value.selectedWriters = successData
-      }
     },
-    fail: async () => {
-      const { data: successData, message } = await checkPaymentService({
-        outTradeNo: data.out_trade_no,
-      })
-      if (message === '支付成功') {
-        profile.value.selectedWriters = successData
-      }
+    fail: () => {
       uni.hideLoading()
     },
   })

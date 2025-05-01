@@ -109,13 +109,6 @@ const onTopUp = async (): Promise<void> => {
       }
     },
     fail: async () => {
-      const { data: successData, message } = await topUpRecordLengthSeccessService({
-        outTradeNo: data.out_trade_no,
-        count,
-      })
-      if (message === '支付成功') {
-        userInfo.record_length = successData
-      }
       uni.hideLoading()
     },
   })

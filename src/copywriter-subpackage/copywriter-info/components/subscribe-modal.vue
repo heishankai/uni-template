@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 // service
-import { addReserveOrderService, orderSuccessNotifyService } from '../service'
+import { addReserveOrderService } from '../service'
 
 interface CopywriterInfo {
   writerPayment: number
@@ -75,18 +75,12 @@ const handlePay = async (): Promise<void> => {
     orderInfo: '1',
     ...data,
     success: async () => {
-      const res = await orderSuccessNotifyService({ outTradeNo: data.out_trade_no })
-      console.log(res, 'res')
-
-      uni.showToast({ title: '支付成功', icon: 'none' })
       localCopywriterInfo.value = 0
       selectedTimes.value = new Set()
       handleClose()
       uni.hideLoading()
     },
     fail: async () => {
-      const res = await orderSuccessNotifyService({ outTradeNo: data.out_trade_no })
-      console.log(res, 'res')
       uni.hideLoading()
     },
   })

@@ -49,14 +49,3 @@ export const addReserveOrderService = (params: {
     data: params,
   })
 }
-
-/**
- * 查询订单是否支付成功
- */
-export const orderSuccessNotifyService = (params: { outTradeNo: string }): Promise<any> => {
-  return request({
-    method: 'POST',
-    url: '/order-success-notify',
-    data: params,
-  })
-}
