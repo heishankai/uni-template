@@ -167,7 +167,9 @@ const handleGetCity = (): void => {
 onLoad(() => {
   const { userInfo } = useUserInfoStore()
   profile.value = { ...userInfo }
-  handleGetCity()
+  if (!userInfo.city) {
+    handleGetCity()
+  }
 })
 </script>
 

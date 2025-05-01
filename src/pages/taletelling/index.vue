@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onHide, onShow } from '@dcloudio/uni-app'
+import { onHide, onShow, onPullDownRefresh } from '@dcloudio/uni-app'
 // components
 import tabbar from '@/components/custom-tab-bar.vue'
 import voiceAnimation from '@/components/voice-animation.vue'
@@ -85,8 +85,10 @@ const startRecording = (): void => {
 
 // 获取录音列表
 const getRecordListData = async (): Promise<void> => {
+  uni.showLoading({ title: '加载中...' })
   const { data } = await getRecordListService()
   recordList.value = data || []
+  uni.hideLoading()
 }
 
 // 停止录音
@@ -113,6 +115,13 @@ const getUserCount = async (): Promise<void> => {
   const res = await getUserCountService()
   record_length.value = res.data.record_length
 }
+
+// 下拉刷新触发
+onPullDownRefresh(() => {
+  getRecordListData()
+  getUserCount()
+  uni.stopPullDownRefresh() // 停止下拉刷新动画
+})
 
 onShow(() => {
   getRecordListData()

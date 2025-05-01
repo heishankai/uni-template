@@ -25,7 +25,9 @@
 		{
 			"path": "pages/taletelling/index",
 			"style": {
-				"navigationBarTitleText": "讲故事"
+				"navigationBarTitleText": "讲故事",
+				"enablePullDownRefresh": true
+				
 			}
 		},
 		{
@@ -70,7 +72,10 @@
 				"pagePath": "pages/taletelling/index",
 				"iconPath": "static/tabbar/taletelling.png",
 				"selectedIconPath": "static/tabbar/taletelling_on.png",
-				"text": "讲故事"
+				"text": "讲故事",
+				"style": {
+					"enablePullDownRefresh": true
+				  }
 			},
 			{
 				"pagePath": "pages/message/index",
