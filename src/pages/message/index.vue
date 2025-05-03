@@ -62,7 +62,11 @@ const onRefresh = async (): Promise<void> => {
 
 // 跳转到详情页
 const handleDialoguePage = (item): void => {
-  const { toUserid, nickname } = item || {}
+  console.log(item, 'item')
+
+  const { userid, toUserid, nickname } = item || {}
+  console.log(userid, 'userid')
+  console.log('toUserId', toUserid)
 
   uni.vibrateShort()
   uni.navigateTo({
