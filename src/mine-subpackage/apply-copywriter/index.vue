@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <scroll-view class="scroll-view">
+    <scroll-view class="scroll-view" scroll-y>
       <!-- 进度条 -->
       <rate-bar :rate="rate" />
       <!-- 表单 -->

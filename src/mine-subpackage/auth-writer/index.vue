@@ -120,7 +120,7 @@ page {
 
 button {
   width: 86%;
-  line-height: 80rpx;
+  line-height: 90rpx;
   font-size: 38rpx;
   border-radius: 30px;
   font-family: Roboto;
