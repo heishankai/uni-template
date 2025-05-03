@@ -66,6 +66,8 @@ const handleSend = (): void => {
     toUserid: toUserid.value,
   }
 
+  console.log(msgObj, 'msgObj')
+
   socket.emit('userMessage', msgObj)
   messageListData.value.push(msgObj)
   searchValue.value = ''

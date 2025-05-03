@@ -62,12 +62,11 @@ const onRefresh = async (): Promise<void> => {
 
 // 跳转到详情页
 const handleDialoguePage = (item): void => {
-  const { userid, nickname } = item || {}
-
+  const { toUserid, nickname } = item || {}
 
   uni.vibrateShort()
   uni.navigateTo({
-    url: `/copywriter-subpackage/dialogue/index?_id=${userid}&nickname=${nickname}`,
+    url: `/copywriter-subpackage/dialogue/index?_id=${toUserid}&nickname=${nickname}`,
   })
 }
 
