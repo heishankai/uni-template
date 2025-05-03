@@ -2,7 +2,8 @@
 import { useUserInfoStore } from '@/stores'
 import { Base64 } from 'js-base64'
 
-export const BASEURL = 'http://127.0.0.1:7001'
+// export const BASEURL = 'http://127.0.0.1:7001'
+export const BASEURL = 'https://www.1shaoyan.com' // 线上地址
 const WXBASEURL = '/api/wechat'
 
 export const uploadFileUrl = BASEURL + '/api/admin/uploadFile'

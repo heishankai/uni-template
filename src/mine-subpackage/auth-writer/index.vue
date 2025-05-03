@@ -34,7 +34,7 @@ const stepsList = ref([
   },
   {
     title: '审核中',
-    desc: '请联系审核人员：进行人工认证',
+    desc: '请发送简历和作品(链接)到：hr@1shaoyan.com 邮箱',
   },
   {
     title: '认证成功',

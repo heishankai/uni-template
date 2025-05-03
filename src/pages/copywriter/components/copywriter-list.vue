@@ -26,14 +26,14 @@
       <view class="footer">
         <view class="left">
           <view @click="handlePraise(item._id)">
-            <button>
+            <button class="like">
               <image
                 v-if="item.isLike"
                 src="@/static/copywriter-sbuPages/praise_on.png"
                 mode="aspectFill"
               />
               <image v-else src="@/static/copywriter-sbuPages/praise.png" mode="aspectFill" />
-              <text>{{ item?.likeCount }}</text>
+              <view v-show="item?.likeCount">{{ item?.likeCount }}</view>
             </button>
           </view>
         </view>
@@ -259,9 +259,19 @@ onShareAppMessage(() => {
         display: flex;
         align-items: center;
 
-        image {
-          width: 46rpx;
-          height: 46rpx;
+        .like {
+          display: flex;
+          align-items: center;
+
+          image {
+            width: 46rpx;
+            height: 46rpx;
+          }
+
+          view {
+            margin-left: 12rpx;
+            color: $uni-text-color-placeholder;
+          }
         }
       }
     }

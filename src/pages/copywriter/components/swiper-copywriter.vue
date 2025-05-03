@@ -1,6 +1,6 @@
 <template>
   <view class="copywriter-list">
-    <view class="title">
+    <view class="title" v-if="swiperList?.length">
       <view>精选撰稿人</view>
     </view>
     <scroll-view scroll-x class="scroll-view">
