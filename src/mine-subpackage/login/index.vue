@@ -1,7 +1,11 @@
 <template>
   <view class="container">
     <view class="content">
-      <image class="avatar" src="https://img.yzcdn.cn/vant/cat.jpeg" mode="scaleToFill" />
+      <image
+        class="avatar"
+        src="https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746247002456272.jpeg"
+        mode="scaleToFill"
+      />
       <button class="submit" @click="handleLogin">一键登录</button>
     </view>
   </view>

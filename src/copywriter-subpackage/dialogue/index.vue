@@ -64,7 +64,12 @@ const handleSend = (): void => {
     nickname: getUserInfo().nickname,
     userid: getUserInfo().id,
     toUserid: toUserid.value,
+    // userid: '67f3f3109af68813efca8952',
+    // toUserid: '6815e255c7332228c8022e49',
   }
+
+  // selfId new ObjectId("6815e255c7332228c8022e49")
+  // otherId new ObjectId("67f3f3109af68813efca8952")
 
   console.log(msgObj, 'msgObj')
 
@@ -89,6 +94,8 @@ const getMessageList = async (toUserid): Promise<void> => {
 // 页面加载
 onLoad((options) => {
   const { _id, nickname } = options || {}
+  console.log(_id, '_id')
+
   toUserid.value = _id
   uni.setNavigationBarTitle({ title: decodeURIComponent(nickname) })
   getMessageList(_id)
