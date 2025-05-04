@@ -40,6 +40,11 @@
 
 <script setup lang="ts">
 import { LikeOrUnlikeService } from '../service'
+import { onShareAppMessage } from '@dcloudio/uni-app'
+// utils
+import { useShare } from '@/utils/useShare'
+
+const { setShareData, onShareAppMessage: shareHandler } = useShare()
 
 interface Writer {
   id: string
@@ -81,10 +86,20 @@ const handlePraise = async (writerId): Promise<void> => {
 }
 
 // 分享
-const handleShare = (id): void => {
+const handleShare = (item): any => {
   uni.vibrateShort()
-  console.log(id)
+
+  const { openid, nickname, avatar } = item ?? {}
+
+  setShareData({
+    imageUrl: avatar,
+    title: nickname,
+    path: `/copywriter-subpackage/copywriter-info/index?openid=${openid}&nickname=${nickname}`, // 指向详情页并带参数
+  })
 }
+
+// 注册分享事件处理函数
+onShareAppMessage(shareHandler)
 </script>
 
 <style lang="scss" scoped>

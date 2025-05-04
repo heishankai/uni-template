@@ -39,11 +39,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 // components
 import subscribeModal from './components/subscribe-modal.vue'
 // service
 import { getOnewriterService, CollectAndUncollectService, LikeOrUnlikeService } from './service'
+// utils
+import { useShare } from '@/utils/useShare'
+
+const { setShareData, onShareAppMessage: shareHandler } = useShare()
 
 const copywriterInfo = ref<any>({})
 const subscribeModalRef = ref()
@@ -84,7 +88,16 @@ onLoad(async (options) => {
 
   const { data } = await getOnewriterService({ openid })
   copywriterInfo.value = data || {}
+
+  setShareData({
+    imageUrl: data.avatar,
+    title: nickname,
+    path: `/copywriter-subpackage/copywriter-info/index?openid=${openid}&nickname=${nickname}`, // 指向详情页并带参数
+  })
 })
+
+// 注册分享事件处理函数
+onShareAppMessage(shareHandler)
 </script>
 
 <style lang="scss">

@@ -22,9 +22,10 @@
       </view>
       <view class="footer">
         <view class="left"> </view>
-        <view @click="handleShare(item._id)">
-          <button open-type="share">
-            <uni-icons custom-prefix="iconfont" type="icon-fenxiang" color="#808080" size="20" />
+        <view @click="handleShare(item)">
+          <button open-type="share" class="share">
+            <uni-icons custom-prefix="iconfont" type="icon-fenxiang" color="#808080" size="18" />
+            <text>分享</text>
           </button>
         </view>
       </view>
@@ -34,6 +35,11 @@
 
 <script setup lang="ts">
 import { CollectAndUncollectService } from '../service'
+import { onShareAppMessage } from '@dcloudio/uni-app'
+// utils
+import { useShare } from '@/utils/useShare'
+
+const { setShareData, onShareAppMessage: shareHandler } = useShare()
 
 interface Writer {
   id: string
@@ -75,10 +81,20 @@ const handleCollect = async (writerId): Promise<void> => {
 }
 
 // 分享
-const handleShare = (id): void => {
+const handleShare = (item): any => {
   uni.vibrateShort()
-  console.log(id)
+
+  const { openid, nickname, avatar } = item ?? {}
+
+  setShareData({
+    imageUrl: avatar,
+    title: nickname,
+    path: `/copywriter-subpackage/copywriter-info/index?openid=${openid}&nickname=${nickname}`, // 指向详情页并带参数
+  })
 }
+
+// 注册分享事件处理函数
+onShareAppMessage(shareHandler)
 </script>
 
 <style lang="scss" scoped>
@@ -142,6 +158,17 @@ const handleShare = (id): void => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
+      .share {
+        display: flex;
+        align-items: center;
+        font-size: 28rpx;
+        color: $uni-text-color-placeholder;
+
+        text {
+          margin-left: 12rpx;
+        }
+      }
 
       button {
         margin: 0rpx;

@@ -53,10 +53,13 @@ import { ref } from 'vue'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 // services
 import { getAllWriterService, CollectAndUncollectService, LikeOrUnlikeService } from '../service'
+// utils
+import { useShare } from '@/utils/useShare'
+
+const { setShareData, onShareAppMessage: shareHandler } = useShare()
 
 const guessList = ref<any[]>([])
 const finish = ref(false)
-const currentShare = ref<any>({})
 const pageParams = ref<{ page: number; limit: number }>({
   page: 1,
   limit: 10,
@@ -138,28 +141,20 @@ const handlePraise = async (writerId): Promise<void> => {
 }
 
 // 分享
-const handleShare = (item): void => {
+const handleShare = (item): any => {
   uni.vibrateShort()
-  currentShare.value = item
+
+  const { openid, nickname, avatar } = item ?? {}
+
+  setShareData({
+    imageUrl: avatar,
+    title: nickname,
+    path: `/copywriter-subpackage/copywriter-info/index?openid=${openid}&nickname=${nickname}`, // 指向详情页并带参数
+  })
 }
 
-// 监听分享事件
-onShareAppMessage(() => {
-  if (!currentShare.value) {
-    return {
-      title: '每日推荐撰稿人',
-      path: '/pages/index/index', // 默认首页或其它路径
-    }
-  }
-
-  const { openid, nickname, avatar } = currentShare.value ?? {}
-
-  return {
-    imageUrl: avatar,
-    title: '撰稿人' + nickname,
-    path: `/copywriter-subpackage/copywriter-info/index?openid=${openid}&nickname=${nickname}`, // 指向详情页并带参数
-  }
-})
+// 注册分享事件处理函数
+onShareAppMessage(shareHandler)
 </script>
 
 <style lang="scss" scoped>
