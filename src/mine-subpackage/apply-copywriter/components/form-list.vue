@@ -254,8 +254,6 @@ const getWriterInfoData = async (): Promise<void> => {
 
 // 是否成为精选撰稿人
 const onSelectedWritersChange = async (e: any): Promise<void> => {
-  console.log(e.detail.value, 'e.detail.value')
-
   if (e.detail.value === '2') {
     profile.value.selectedWriters = e.detail.value
     return
@@ -265,7 +263,7 @@ const onSelectedWritersChange = async (e: any): Promise<void> => {
 
   // 调用服务端接口 - 获取支付参数
   const { data, message } = await becomeSelectedWriterService({
-    orderAmount: 0.01,
+    orderAmount: 299,
   })
 
   if (message !== 'SUCCESS') {

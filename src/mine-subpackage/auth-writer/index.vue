@@ -66,7 +66,7 @@ const onApplyFor = async (): Promise<void> => {
 
   // 调用服务端接口 - 获取支付参数
   const { data } = await addAuthWriterOrderService({
-    orderAmount: 0.01,
+    orderAmount: 99,
   })
 
   // 调用支付接口
