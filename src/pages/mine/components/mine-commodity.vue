@@ -6,17 +6,18 @@
   </view>
   <view class="mine-commodity">
     <view
-      v-for="(item, index) in commodityList"
-      :key="index"
+      v-for="item in commodityList"
+      :key="item.appId"
       class="commodity-item"
       :style="{
         background: `url(${item?.image}) no-repeat center center`,
         backgroundSize: 'cover',
       }"
+      @click="handleGominiProgram(item)"
     >
       <view class="info">
         <view class="name">{{ item.name }}</view>
-        <view class="money">{{ item.money }} ¥</view>
+        <view class="money" v-if="item.money">{{ item.money }} ¥</view>
       </view>
     </view>
   </view>
@@ -27,30 +28,32 @@ import { ref } from 'vue'
 
 const commodityList = ref([
   {
-    id: 1,
-    name: '商品 1',
-    money: 192.88,
-    image: 'https://img.yzcdn.cn/vant/apple-1.jpg',
+    appId: 'wx6c1bc083bf89a0d2',
+    name: '金彩1家人',
+    money: '',
+    image:
+      'https://mmbiz.qpic.cn/sz_mmbiz_png/31rgBE2rEsdbysOhnJ4S4iczv9MHVyXfuGZbBmDqAhAmM2MquITHUHCDicO8ibRaO3WlMIoNAaNaibcf7DwP0I8vSA/640?wx_fmt=png&tp=wxpic&wxfrom=5&wx_lazy=1',
   },
   {
-    id: 2,
-    name: '商品 2',
-    money: 192.88,
-    image: 'https://img.yzcdn.cn/vant/apple-2.jpg',
-  },
-  {
-    id: 3,
-    name: '商品 3',
-    money: 192.88,
-    image: 'https://img.yzcdn.cn/vant/apple-3.jpg',
-  },
-  {
-    id: 4,
-    name: '商品 4',
-    money: 192.88,
-    image: 'https://img.yzcdn.cn/vant/apple-4.jpg',
+    appId: 'wxecfa1408d4ec5f40',
+    name: '九九安好',
+    money: '',
+    image:
+      'https://mmecoa.qpic.cn/mmecoa_png/ricy4CgALmLj1FxU6HfbrVM4OabYC7hyDviauNgOsJq5wdNxhyicYkIxejHhL6XJqCBTQzzOKia12sFhCvJ5hpyiaLw/640?wx_fmt=png&tp=wxpic&wxfrom=10005&wx_lazy=1',
   },
 ])
+
+// 跳转服务号
+const handleGominiProgram = (item: any): void => {
+  const { appId } = item ?? {}
+  uni.navigateToMiniProgram({
+    appId,
+    fail: (err) => {
+      console.error('Navigation to mini program failed:', err)
+      uni.showToast({ title: '跳转失败', icon: 'none' })
+    },
+  })
+}
 </script>
 
 <style lang="scss" scoped>
