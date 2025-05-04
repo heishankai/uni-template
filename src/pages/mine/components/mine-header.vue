@@ -1,7 +1,7 @@
 <template>
   <view class="header-container">
     <view class="show-info" v-if="profile.user_token">
-      <image class="avatar" :src="profile.avatar" mode="scaleToFill" />
+      <image class="avatar" :src="profile.avatar" mode='aspectFill' />
       <view class="data" @click="handelePersonal">
         <view class="name">{{ profile.nickname }}</view>
         <view class="hint">修改个人信息</view>

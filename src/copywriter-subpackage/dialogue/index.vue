@@ -64,14 +64,7 @@ const handleSend = (): void => {
     nickname: getUserInfo().nickname,
     userid: getUserInfo().id,
     toUserid: toUserid.value,
-    // userid: '67f3f3109af68813efca8952',
-    // toUserid: '6815e255c7332228c8022e49',
   }
-
-  // selfId new ObjectId("6815e255c7332228c8022e49")
-  // otherId new ObjectId("67f3f3109af68813efca8952")
-
-  console.log(msgObj, 'msgObj')
 
   socket.emit('userMessage', msgObj)
   messageListData.value.push(msgObj)
@@ -84,17 +77,18 @@ const handleSend = (): void => {
 
 // 获取历史消息
 const getMessageList = async (toUserid): Promise<void> => {
+  uni.showLoading({ title: '加载中...' })
   const { data } = await getMessageListService({ toUserid })
   messageListData.value = data
   nextTick(() => {
     scrollToBottom()
   })
+  uni.hideLoading()
 }
 
 // 页面加载
 onLoad((options) => {
   const { _id, nickname } = options || {}
-  console.log(_id, '_id')
 
   toUserid.value = _id
   uni.setNavigationBarTitle({ title: decodeURIComponent(nickname) })
