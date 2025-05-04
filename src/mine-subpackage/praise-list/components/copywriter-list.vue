@@ -16,19 +16,21 @@
       <view class="footer">
         <view class="left">
           <view @click="handlePraise(item._id)">
-            <button>
+            <button class="like">
               <image
                 v-if="item.isLike"
                 src="@/static/copywriter-sbuPages/praise_on.png"
                 mode="aspectFill"
               />
               <image v-else src="@/static/copywriter-sbuPages/praise.png" mode="aspectFill" />
+              <view v-show="item?.likeCount">{{ item?.likeCount }}</view>
             </button>
           </view>
         </view>
-        <view @click="handleShare(item._id)">
-          <button open-type="share">
-            <uni-icons custom-prefix="iconfont" type="icon-fenxiang" color="#808080" size="20" />
+        <view @click="handleShare(item)">
+          <button open-type="share" class="share">
+            <uni-icons custom-prefix="iconfont" type="icon-fenxiang" color="#808080" size="18" />
+            <text>分享</text>
           </button>
         </view>
       </view>
@@ -50,6 +52,7 @@ interface Writer {
   _id: string
   isCollect: boolean
   isLike: boolean
+  likeCount: number
 }
 
 defineProps<{
@@ -146,6 +149,17 @@ const handleShare = (id): void => {
       justify-content: space-between;
       align-items: center;
 
+      .share {
+        display: flex;
+        align-items: center;
+        font-size: 28rpx;
+        color: $uni-text-color-placeholder;
+
+        text {
+          margin-left: 12rpx;
+        }
+      }
+
       button {
         margin: 0rpx;
         line-height: normal;
@@ -159,9 +173,19 @@ const handleShare = (id): void => {
         display: flex;
         align-items: center;
 
-        image {
-          width: 46rpx;
-          height: 46rpx;
+        .like {
+          display: flex;
+          align-items: center;
+
+          image {
+            width: 46rpx;
+            height: 46rpx;
+          }
+
+          view {
+            margin-left: 12rpx;
+            color: $uni-text-color-placeholder;
+          }
         }
       }
     }

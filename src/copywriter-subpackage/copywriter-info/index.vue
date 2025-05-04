@@ -1,15 +1,13 @@
 <template>
   <view class="container">
-    <scroll-view scroll-y>
-      <template>
-        <image
-          v-for="(item, index) in copywriterInfo?.resume_images"
-          :key="index"
-          :src="item"
-          mode="scaleToFill"
-          @click="previewImage(item)"
-        />
-      </template>
+    <scroll-view class="scroll-view" scroll-y :show-scrollbar="false">
+      <image
+        v-for="(item, index) in copywriterInfo?.resume_images"
+        :key="index"
+        :src="item"
+        mode="aspectFill"
+        @click="previewImage(item)"
+      />
     </scroll-view>
     <view class="footer">
       <view class="operate">
@@ -64,7 +62,7 @@ const handlePraise = async (writerId): Promise<void> => {
   const { data } = await LikeOrUnlikeService({ writerId })
 
   uni.showToast({ title: data?.message, icon: 'none' })
-  copywriterInfo.value.isLike = data?.data
+  copywriterInfo.value.isLike = data?.isLike
 }
 
 // 立即预约
@@ -101,13 +99,13 @@ page {
   flex-direction: column;
 }
 
-scroll-view {
+.scroll-view {
   flex: 1;
-  overflow-y: auto;
 
   image {
     width: 100%;
     height: 100%;
+    object-fit: cover;
   }
 }
 

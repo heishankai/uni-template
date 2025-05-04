@@ -116,8 +116,6 @@ const handleCollect = async (writerId): Promise<void> => {
   uni.vibrateShort()
   const { data } = await CollectAndUncollectService({ writerId })
 
-  uni.showToast({ title: data?.message, icon: 'none' })
-
   // 更新当前列表中对应撰稿人的收藏状态
   const index = guessList.value.findIndex((guessItem) => guessItem?._id === writerId)
   if (index !== -1) {
@@ -129,13 +127,13 @@ const handleCollect = async (writerId): Promise<void> => {
 const handlePraise = async (writerId): Promise<void> => {
   uni.vibrateShort()
   const { data } = await LikeOrUnlikeService({ writerId })
-
-  uni.showToast({ title: data?.message, icon: 'none' })
+  const { likeCount, isLike } = data ?? {}
 
   // 更新当前列表中对应撰稿人的点赞状态
   const index = guessList.value.findIndex((guessItem) => guessItem?._id === writerId)
   if (index !== -1) {
-    guessList.value[index].isLike = data?.data
+    guessList.value[index].isLike = isLike
+    guessList.value[index].likeCount = likeCount
   }
 }
 
@@ -154,9 +152,10 @@ onShareAppMessage(() => {
     }
   }
 
-  const { openid, nickname } = currentShare.value ?? {}
+  const { openid, nickname, avatar } = currentShare.value ?? {}
 
   return {
+    imageUrl: avatar,
     title: '撰稿人' + nickname,
     path: `/copywriter-subpackage/copywriter-info/index?openid=${openid}&nickname=${nickname}`, // 指向详情页并带参数
   }

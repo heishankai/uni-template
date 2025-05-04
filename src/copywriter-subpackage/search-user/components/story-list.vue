@@ -16,7 +16,7 @@
       </view>
       <view class="footer">
         <view class="right" @click="handleContact(item)">
-          <text>建立联系</text>
+          <text>聊一聊</text>
         </view>
       </view>
     </view>

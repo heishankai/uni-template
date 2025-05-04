@@ -101,9 +101,6 @@ const selectTime = (date: string, time: string): void => {
   // 时间段的费用
   const originalPayment = props.copywriterInfo.writerPayment // 保存初始值
   localCopywriterInfo.value = (selectedTimeArray?.length * originalPayment)?.toFixed(2)
-
-  console.log('选择时间:', selectedTimeArray)
-  console.log(props.copywriterInfo, 'props.copywriterInfo')
 }
 
 // 判断时间是否已被选中

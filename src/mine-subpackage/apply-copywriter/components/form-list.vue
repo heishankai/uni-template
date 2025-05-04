@@ -113,7 +113,7 @@
         <text>简历</text>
         <view v-if="profile?.resume_images?.length" class="resume_images-list">
           <view v-for="(item, index) in profile?.resume_images" :key="item" class="image-container">
-            <image :src="item" mode="scaleToFill" @click="previewImage(item)" />
+            <image :src="item" mode="aspectFill" @click="previewImage(item)" />
             <view class="delete-button" @click="removeImage(index)">
               <uni-icons type="close" size="30" color="#FFFFFF" />
             </view>

@@ -1,6 +1,6 @@
 <template>
-  <view class="copywriter-list">
-    <view class="title" v-if="swiperList?.length">
+  <view class="copywriter-list" v-if="swiperList?.length">
+    <view class="title">
       <view>精选撰稿人</view>
     </view>
     <scroll-view scroll-x class="scroll-view">
@@ -43,8 +43,7 @@ const swiperList = ref<any>([])
 const getSwiperList = async (): Promise<void> => {
   // 获取数据
   const { data } = await getAllWriterByTypeService()
-  console.log(data, 'res')
-  swiperList.value = data
+  swiperList.value = data || []
 }
 
 onShow(() => {
