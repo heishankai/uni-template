@@ -116,6 +116,7 @@ const handleAvatarChange = (): void => {
     // 文件类型
     mediaType: ['image'],
     success: (res) => {
+      uni.showLoading({ title: '上传中', mask: true })
       uni.uploadFile({
         url: uploadFileUrl,
         name: 'file',
@@ -128,6 +129,7 @@ const handleAvatarChange = (): void => {
           uni.showToast({ title: '上传失败', icon: 'none' })
         },
       })
+      uni.hideLoading()
     },
     fail: () => {
       uni.showToast({ title: '上传失败', icon: 'none' })

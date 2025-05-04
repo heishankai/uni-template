@@ -36,7 +36,7 @@ const commodityList = ref([
   },
   {
     appId: 'wxecfa1408d4ec5f40',
-    name: '九九安好',
+    name: '榕树洞',
     money: '',
     image:
       'https://mmecoa.qpic.cn/mmecoa_png/ricy4CgALmLj1FxU6HfbrVM4OabYC7hyDviauNgOsJq5wdNxhyicYkIxejHhL6XJqCBTQzzOKia12sFhCvJ5hpyiaLw/640?wx_fmt=png&tp=wxpic&wxfrom=10005&wx_lazy=1',
