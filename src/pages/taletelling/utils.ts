@@ -78,9 +78,10 @@ export const useRecorder = (
             return
           }
           uni.showLoading({ title: '上传中...', mask: true })
-          uni.uploadFile({
+          wx.uploadFile({
             url: uploadFileUrl,
             filePath: res?.tempFilePath,
+            timeout: 300000, // 设置为 5 分钟（单位：ms）
             name: 'file',
             async success(res) {
               try {

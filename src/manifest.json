@@ -72,7 +72,13 @@
             "scope.userLocation": {
                 "desc": "您的位置信息将用于小程序位置效果展示"
             }
-        }
+        },
+        "networkTimeout": {
+            "request": 600000,
+            "connectSocket": 600000,
+            "uploadFile": 600000,
+            "downloadFile": 600000
+        },
     },
     "mp-alipay": {
         "usingComponents": true
