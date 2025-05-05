@@ -56,13 +56,13 @@ const record_length = ref<number>(0)
 
 const { startRecord, stopRecord }: any = useRecorder(recordList, recordingTime) || {}
 
-// 超时自动停止（5秒后自动停止）
+// 超时自动停止（9分钟秒后自动停止）
 const { start: startTimeout, stop: stopTimeout } = useTimeout(() => {
   if (isRecording.value) {
     stopRecording()
     uni.showToast({ title: '录音已停止', icon: 'none' })
   }
-}, 5000)
+}, 540000)
 
 // 开始录音
 const startRecording = (): void => {
@@ -112,8 +112,10 @@ onHide(() => {
 
 // 获取用户发语音的条数
 const getUserCount = async (): Promise<void> => {
+  uni.showLoading({ title: '加载中...' })
   const res = await getUserCountService()
   record_length.value = res.data.record_length
+  uni.hideLoading()
 }
 
 // 下拉刷新触发

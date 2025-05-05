@@ -28,16 +28,18 @@ import { ref } from 'vue'
 
 const commodityList = ref([
   {
-    appId: 'wx6c1bc083bf89a0d2',
+    appId: '',
     name: '金彩1家人',
     money: '',
+    url: 'https://mp.weixin.qq.com/s/KtLlZahgg3zIerJtyxxkIA',
     image:
       'https://mmbiz.qpic.cn/sz_mmbiz_png/31rgBE2rEsdbysOhnJ4S4iczv9MHVyXfuGZbBmDqAhAmM2MquITHUHCDicO8ibRaO3WlMIoNAaNaibcf7DwP0I8vSA/640?wx_fmt=png&tp=wxpic&wxfrom=5&wx_lazy=1',
   },
   {
-    appId: 'wxecfa1408d4ec5f40',
+    appId: '',
     name: '榕树洞',
     money: '',
+    url: 'https://mp.weixin.qq.com/s/Kyy0tGxCbn7asBtxycGTUA',
     image:
       'https://mmecoa.qpic.cn/mmecoa_png/ricy4CgALmLj1FxU6HfbrVM4OabYC7hyDviauNgOsJq5wdNxhyicYkIxejHhL6XJqCBTQzzOKia12sFhCvJ5hpyiaLw/640?wx_fmt=png&tp=wxpic&wxfrom=10005&wx_lazy=1',
   },
@@ -45,7 +47,13 @@ const commodityList = ref([
 
 // 跳转服务号
 const handleGominiProgram = (item: any): void => {
-  const { appId } = item ?? {}
+  const { appId, url, name } = item ?? {}
+  if (url) {
+    uni.navigateTo({
+      url: `/mine-subpackage/web-view/index?url=${url}&name=${name}`,
+    })
+    return
+  }
   uni.navigateToMiniProgram({
     appId,
     fail: (err) => {

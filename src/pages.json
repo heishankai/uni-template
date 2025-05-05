@@ -181,6 +181,12 @@
 					"style": {
 						"navigationBarTitleText": "登录/注册",
 					}
+				},
+				{
+					"path": "web-view/index",
+					"style": {
+						"navigationBarTitleText": "网页",
+					}
 				}
 			]
 		},

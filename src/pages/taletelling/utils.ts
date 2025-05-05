@@ -112,41 +112,6 @@ export const useRecorder = (
           })
         },
       })
-
-      // uni.uploadFile({
-      //   url: uploadFileUrl,
-      //   filePath: res?.tempFilePath,
-      //   name: 'file',
-      //   async success(res) {
-      //     uni.showLoading({ title: '上传中...', mask: true })
-      //     const { data } = JSON.parse(res?.data)
-
-      //     const { message } = await saveRecordService({
-      //       recordList: [
-      //         {
-      //           src: data,
-      //           time: finalTime,
-      //         },
-      //       ],
-      //     })
-
-      //     uni.showToast({ title: message, icon: 'none' })
-
-      //     recordList.value.push({
-      //       src: data,
-      //       time: finalTime,
-      //     })
-
-      //     // 推入录音信息后再重置录音时间
-      //     recordingTime.value = '00:00'
-      //     uni.hideLoading()
-      //   },
-      //   fail(err) {
-      //     console.error('上传失败:', err)
-      //     uni.showToast({ title: '上传失败', icon: 'none' })
-      //     uni.hideLoading()
-      //   },
-      // })
     })
   })
 
@@ -159,7 +124,7 @@ export const useRecorder = (
   const startRecord = (): void => {
     recorderManager.start({
       format: 'mp3',
-      duration: 5000,
+      duration: 540000,
       sampleRate: 16000,
       numberOfChannels: 1,
       encodeBitRate: 96000,
