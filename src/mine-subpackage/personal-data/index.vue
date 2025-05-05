@@ -1,7 +1,7 @@
 <template>
   <view class="container">
     <!-- 滚动容器 -->
-    <scroll-view class="scroll-view">
+    <scroll-view class="scroll-view" overflow-y="scroll">
       <template>
         <view
           class="avatar"
@@ -55,7 +55,10 @@
         </view>
       </template>
     </scroll-view>
-    <button @click="onSubmit">保存</button>
+    <view class="footer">
+      <button @click="onQuitLogin">退出登录</button>
+      <button @click="onSubmit">保存</button>
+    </view>
   </view>
 </template>
 
@@ -69,7 +72,7 @@ import { uploadFileUrl } from '@/utils/request'
 import { genderList } from './utils'
 // store
 import { useUserInfoStore } from '@/stores'
-const { userInfo, set } = useUserInfoStore()
+const { userInfo, set, clear } = useUserInfoStore()
 
 const profile = ref({
   // 头像
@@ -100,6 +103,19 @@ const onSubmit = async (): Promise<void> => {
   uni.hideLoading()
   uni.showToast({ title: '保存成功', icon: 'none' })
   uni.navigateBack({ delta: 1 })
+}
+
+const onQuitLogin = (): void => {
+  uni.showModal({
+    title: '提示',
+    content: '是否退出登录？',
+    success: (res) => {
+      if (res.confirm) {
+        clear()
+        uni.navigateTo({ url: '/mine-subpackage/login/index' })
+      }
+    },
+  })
 }
 
 // 性别选择
@@ -186,6 +202,15 @@ page {
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0rpx 24rpx;
+  gap: 24rpx;
+  margin-bottom: env(safe-area-inset-bottom);
 
   button {
     width: 86%;
@@ -196,7 +221,6 @@ page {
     letter-spacing: 0.54rpx;
     color: $uni-text-color-inverse;
     background-color: $uni-bg-color;
-    margin-bottom: env(safe-area-inset-bottom);
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
     &::after {

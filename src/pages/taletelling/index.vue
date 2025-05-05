@@ -62,7 +62,7 @@ const { start: startTimeout, stop: stopTimeout } = useTimeout(() => {
     stopRecording()
     uni.showToast({ title: '录音已停止', icon: 'none' })
   }
-}, 540000)
+}, 59000)
 
 // 开始录音
 const startRecording = (): void => {

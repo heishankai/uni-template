@@ -75,6 +75,8 @@ export const useRecorder = (
         success: async function (response) {
           const { confirm } = response
           if (!confirm) {
+            // 推入录音信息后再重置录音时间
+            recordingTime.value = '00:00'
             return
           }
           uni.showLoading({ title: '上传中...', mask: true })
@@ -109,6 +111,8 @@ export const useRecorder = (
             fail(err) {
               console.error('上传失败:', err)
               uni.hideLoading()
+              // 推入录音信息后再重置录音时间
+              recordingTime.value = '00:00'
             },
           })
         },
@@ -125,7 +129,7 @@ export const useRecorder = (
   const startRecord = (): void => {
     recorderManager.start({
       format: 'mp3',
-      duration: 540000,
+      duration: 59000,
       sampleRate: 16000,
       numberOfChannels: 1,
       encodeBitRate: 96000,

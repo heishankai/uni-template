@@ -7,18 +7,15 @@
   <view class="mine-commodity">
     <view
       v-for="item in commodityList"
-      :key="item.appId"
+      :key="item.name"
       class="commodity-item"
-      :style="{
-        background: `url(${item?.image}) no-repeat center center`,
-        backgroundSize: 'cover',
-      }"
       @click="handleGominiProgram(item)"
     >
+      <image :src="item?.image" mode="aspectFill" show-menu-by-longpress />
       <view class="info">
         <view class="name">{{ item.name }}</view>
-        <view class="money" v-if="item.money">{{ item.money }} ¥</view>
       </view>
+      <view class="money" v-if="item.money">{{ item.money }}</view>
     </view>
   </view>
 </template>
@@ -27,39 +24,38 @@
 import { ref } from 'vue'
 
 const commodityList = ref([
-  {
-    appId: '',
-    name: '金彩1家人',
-    money: '',
-    url: 'https://mp.weixin.qq.com/s/KtLlZahgg3zIerJtyxxkIA',
-    image:
-      'https://mmbiz.qpic.cn/sz_mmbiz_png/31rgBE2rEsdbysOhnJ4S4iczv9MHVyXfuGZbBmDqAhAmM2MquITHUHCDicO8ibRaO3WlMIoNAaNaibcf7DwP0I8vSA/640?wx_fmt=png&tp=wxpic&wxfrom=5&wx_lazy=1',
-  },
+  // {
+  //   appId: '',
+  //   name: '金彩1家人',
+  //   money: '长按识别二维码',
+  //   image: 'https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746450468719965.jpg',
+  // },
   {
     appId: '',
     name: '榕树洞',
-    money: '',
-    url: 'https://mp.weixin.qq.com/s/Kyy0tGxCbn7asBtxycGTUA',
-    image:
-      'https://mmecoa.qpic.cn/mmecoa_png/ricy4CgALmLj1FxU6HfbrVM4OabYC7hyDviauNgOsJq5wdNxhyicYkIxejHhL6XJqCBTQzzOKia12sFhCvJ5hpyiaLw/640?wx_fmt=png&tp=wxpic&wxfrom=10005&wx_lazy=1',
+    money: '长按识别二维码',
+    image: 'https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746450468719965.jpg',
+  },
+  {
+    appId: '',
+    name: '大咖小黑板',
+    money: '长按识别二维码',
+    image: 'https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746450610453918.jpg',
+  },
+  {
+    appId: '',
+    name: '实习offer通',
+    money: '长按识别二维码',
+    image: 'https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746450742755440.jpg',
   },
 ])
 
 // 跳转服务号
 const handleGominiProgram = (item: any): void => {
-  const { appId, url, name } = item ?? {}
-  if (url) {
-    uni.navigateTo({
-      url: `/mine-subpackage/web-view/index?url=${url}&name=${name}`,
-    })
-    return
-  }
-  uni.navigateToMiniProgram({
-    appId,
-    fail: (err) => {
-      console.error('Navigation to mini program failed:', err)
-      uni.showToast({ title: '跳转失败', icon: 'none' })
-    },
+  const { image } = item ?? {}
+  uni.previewImage({
+    current: image,
+    urls: [image],
   })
 }
 </script>
@@ -91,6 +87,13 @@ const handleGominiProgram = (item: any): void => {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
   }
 
+  image {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    object-fit: cover;
+  }
+
   .info {
     padding: 24rpx;
     background: #ffffff;
@@ -106,9 +109,9 @@ const handleGominiProgram = (item: any): void => {
   }
 
   .money {
-    font-size: 14px;
+    padding: 0rpx 12rpx 8rpx 24rpx;
+    font-size: 12px;
     color: #e74c3c;
-    margin-top: 5rpx;
   }
 }
 </style>

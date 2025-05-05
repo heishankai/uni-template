@@ -3,7 +3,7 @@
     <view class="content">
       <image
         class="avatar"
-        src="https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746247002456272.jpeg"
+        src="https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746449553614272.jpg"
         mode="scaleToFill"
       />
       <button class="submit" @click="handleLogin">一键登录</button>

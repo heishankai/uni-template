@@ -13,7 +13,7 @@ const handleInputChange = (): void => {
 <template>
   <view class="navbar" :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
     <view class="title">
-      <text>公益1勺盐</text>
+      <text>榕树洞</text>
     </view>
     <view class="search">
       <view class="search-input">

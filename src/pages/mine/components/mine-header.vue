@@ -8,8 +8,8 @@
       </view>
     </view>
     <view v-else>
-      <view class="title">欢迎加入一勺盐</view>
-      <view class="hint">欢迎加入一勺盐，欢迎欢迎，热烈欢迎</view>
+      <view class="title">欢迎加入榕树洞</view>
+      <view class="hint">时代巨变，惟故事恒久。</view>
       <button class="login" @click="handeleLogin">登录/注册</button>
     </view>
   </view>
