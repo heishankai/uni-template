@@ -1,7 +1,7 @@
 <template>
   <view class="info-data">
     <view class="header">
-      <image class="avatar" :src="info.avatar" mode="scaleToFill" />
+      <image class="avatar" :src="info.avatar" mode="aspectFit" />
     </view>
     <view class="info-body">
       <view v-if="info?.nickname">姓名：{{ info?.nickname }}</view>
@@ -54,6 +54,7 @@ defineProps<{
       flex-shrink: 0;
       box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
       margin-top: 48rpx;
+      background-color: #fff;
     }
   }
 

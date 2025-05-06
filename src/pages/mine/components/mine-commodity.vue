@@ -24,12 +24,12 @@
 import { ref } from 'vue'
 
 const commodityList = ref([
-  // {
-  //   appId: '',
-  //   name: '金彩1家人',
-  //   money: '长按识别二维码',
-  //   image: 'https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746450468719965.jpg',
-  // },
+  {
+    appId: '',
+    name: '金彩1家人',
+    money: '长按识别二维码',
+    image: 'https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746539766924886.jpg',
+  },
   {
     appId: '',
     name: '榕树洞',

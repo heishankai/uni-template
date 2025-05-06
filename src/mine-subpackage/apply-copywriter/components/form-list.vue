@@ -97,6 +97,10 @@
         <input type="number" placeholder="请填写撰稿费用" v-model.number="profile.writerPayment" />
       </view>
       <view class="form-item">
+        <text>过往作品</text>
+        <input type="text" placeholder="请输入过往作品" v-model.number="profile.production" />
+      </view>
+      <view class="form-item">
         <text>是否成为精选撰稿人</text>
         <radio-group @change="onSelectedWritersChange">
           <label class="radio" v-for="item in selectedWritersList" :key="item.value">
@@ -150,7 +154,7 @@ defineProps({
 
 const profile = ref<any>({
   // 头像
-  avatar: '',
+  avatar: 'https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746538141033330.png',
   // 昵称
   nickname: '',
   // 城市
@@ -173,6 +177,8 @@ const profile = ref<any>({
   job: undefined,
   // 爱好
   hobby: undefined,
+  // 过往作品
+  production: '',
   // 撰稿费用
   writerPayment: null,
   // 简历图片列表
@@ -243,6 +249,7 @@ const getWriterInfoData = async (): Promise<void> => {
   profile.value = {
     ...profile.value,
     ...userInfo,
+    avatar: 'https://yisaoyan.oss-cn-hangzhou.aliyuncs.com/yisaoyan/1746538141033330.png',
     ...data,
     selectedWriters: data?.isSelectedWriters ? '1' : '2',
   }

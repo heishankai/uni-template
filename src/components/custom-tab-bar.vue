@@ -31,14 +31,14 @@ const tabList = [
     pagePath: '/pages/index/index',
     iconPath: '../static/tabbar/index.png',
     selectedIconPath: '../static/tabbar/index_on.png',
-    text: '榕树洞',
+    text: '讲出来',
   },
   {
     selected: '1',
     pagePath: '/pages/copywriter/index',
     iconPath: '../static/tabbar/copywriter.png',
     selectedIconPath: '../static/tabbar/copywriter_on.png',
-    text: '撰稿人',
+    text: '我来写',
   },
   {
     selected: '2',
@@ -50,9 +50,9 @@ const tabList = [
   {
     selected: '3',
     pagePath: '/pages/message/index',
-    iconPath: '../static/tabbar/message.png',
-    selectedIconPath: '../static/tabbar/message_on.png',
-    text: '消息',
+    iconPath: '../static/tabbar/order.png',
+    selectedIconPath: '../static/tabbar/order_on.png',
+    text: '订单',
   },
   {
     selected: '4',

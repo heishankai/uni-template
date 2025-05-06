@@ -1,6 +1,6 @@
 <template>
   <view class="story-list">
-    <view class="item" v-for="item in storyList" :key="item._id">
+    <view class="item" v-for="item in storyList" :key="item._id" @click="handleContact(item)">
       <view class="header">
         <view class="avatar">
           <image :src="item?.avatar" mode="aspectFill" />
@@ -14,11 +14,11 @@
           <view class="text">城市：{{ item?.city }}</view>
         </view>
       </view>
-      <view class="footer">
+      <!-- <view class="footer">
         <view class="right" @click="handleContact(item)">
           <text>聊一聊</text>
         </view>
-      </view>
+      </view> -->
     </view>
   </view>
 </template>

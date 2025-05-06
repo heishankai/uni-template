@@ -126,7 +126,7 @@ const onGenderChange = (e: any): void => {
 
 // 上传头像 - 仅支持微信小程序端
 const handleAvatarChange = (): void => {
-  uni.chooseMedia({
+  wx.chooseMedia({
     // 文件个数
     count: 1,
     // 文件类型

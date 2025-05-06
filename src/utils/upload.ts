@@ -8,7 +8,7 @@ export const uploadImages = ({
   count: number
   successCallback: (urls: string[]) => void
 }): void => {
-  uni.chooseMedia({
+  wx.chooseMedia({
     count,
     mediaType: ['image'],
     success: (res) => {

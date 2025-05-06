@@ -18,14 +18,14 @@
         </view>
       </navigator>
     </view>
-    <navigator url="/mine-subpackage/order-list/index" class="order-card">
+    <!-- <navigator url="/mine-subpackage/order-list/index" class="order-card">
       <view>订单</view>
       <view>快去查看我的订单吧</view>
       <view>
         <uni-icons type="arrow-right" size="18" color="#6c6c6c" />
         <image src="@/static/mine/order.png" mode="aspectFill" />
       </view>
-    </navigator>
+    </navigator> -->
   </view>
 </template>
 

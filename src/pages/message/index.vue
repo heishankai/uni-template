@@ -1,32 +1,18 @@
 <template>
   <view class="container">
-    <notice />
-    <scroll-view
-      class="scroll-view"
-      scroll-y
-      :refresher-enabled="true"
-      :refresher-triggered="isRefreshing"
-      @refresherrefresh="onRefresh"
-    >
-      <view class="message-list">
-        <view
-          class="item"
-          v-for="item in chatRoomListData"
-          :key="item._id"
-          @click="handleDialoguePage(item)"
-        >
-          <view class="header">
-            <view class="left">
-              <image :src="item.avatar" mode="aspectFill" />
-              <view>
-                <view class="name">{{ item.nickname }}</view>
-                <view class="years-work">{{ item.lastMessage }}</view>
-              </view>
-            </view>
-            <view class="right">{{ moment(item.lastTime).format('MM-DD HH:mm') }}</view>
-          </view>
+    <!-- 搜索 -->
+    <view class="navbar" :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
+      <view class="tips">我的订单</view>
+      <view class="search">
+        <view class="search-input">
+          <uni-icons type="search" color="#00cec9" size="24" />
+          <input placeholder="请输入撰稿人名称查询" @input="handleInputChange" />
         </view>
       </view>
+    </view>
+    <scroll-view class="scroll-view" scroll-y>
+      <!-- 订单列表 -->
+      <order-card :orderInfoList="orderInfoList" />
     </scroll-view>
     <tabbar selected="3" />
   </view>
@@ -34,48 +20,48 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import moment from 'moment'
-import { onShow } from '@dcloudio/uni-app'
-// service
-import { getChatRoomListService } from './service'
+import { onLoad } from '@dcloudio/uni-app'
+import { debounce } from 'lodash-es'
 // components
+import orderCard from './components/order-card.vue'
 import tabbar from '@/components/custom-tab-bar.vue'
-import notice from './components/notice.vue'
+// service
+import { getReserveOrderService } from './service'
 
-// 聊天消息
-const chatRoomListData = ref<any[]>([])
-const isRefreshing = ref(false)
+// 获取屏幕边界到安全区域距离
+const { safeAreaInsets } = uni.getSystemInfoSync()
 
-// 获取用户聊天列表
-const getChatRoomList = async (): Promise<void> => {
-  const { data } = await getChatRoomListService()
-  chatRoomListData.value = data
+// 撰稿人列表数据
+const allOrderInfoList = ref<any[]>([]) // 所有数据的备份
+const orderInfoList = ref<any[]>([]) // 当前展示的数据
+
+// 搜索
+const handleInputChange = debounce(async (e: any): Promise<any> => {
+  const keyword = e.detail.value?.trim().toLowerCase()
+
+  if (!keyword) {
+    orderInfoList.value = allOrderInfoList.value
+    return
+  }
+
+  orderInfoList.value = allOrderInfoList.value.filter((item) =>
+    item.copywriter_name?.toLowerCase().includes(keyword),
+  )
+}, 300)
+
+// 获取订单列表数据
+const getOrderListData = async (): Promise<any> => {
+  uni.showLoading({ title: '加载中...', mask: true })
+
+  const { data } = await getReserveOrderService()
+  allOrderInfoList.value = data
+  orderInfoList.value = data
+
+  uni.hideLoading()
 }
 
-// 下拉刷新
-const onRefresh = async (): Promise<void> => {
-  uni.showToast({ title: '加载中...', icon: 'loading', duration: 500 })
-  isRefreshing.value = true
-  await getChatRoomList()
-  setTimeout(() => (isRefreshing.value = false), 500) // 稍微延迟更平滑
-}
-
-// 跳转到详情页
-const handleDialoguePage = (item): void => {
-  console.log(item, 'item')
-
-  const { userid, toUserid, nickname } = item || {}
-  console.log(userid, 'userid')
-  console.log('toUserId', toUserid)
-
-  uni.vibrateShort()
-  uni.navigateTo({
-    url: `/copywriter-subpackage/dialogue/index?_id=${toUserid}&nickname=${nickname}`,
-  })
-}
-
-onShow(() => {
-  getChatRoomList()
+onLoad(() => {
+  getOrderListData()
 })
 </script>
 
@@ -83,7 +69,7 @@ onShow(() => {
 page {
   height: 100%;
   overflow: hidden;
-  background-color: #f7f7fa;
+  background-color: $uni-text-color-inverse;
 }
 
 .container {
@@ -95,43 +81,58 @@ page {
 .scroll-view {
   flex: 1;
   overflow: hidden;
+  margin-bottom: env(safe-area-inset-bottom);
 }
 
-.message-list {
-  margin: 24rpx;
-  .item {
-    padding: 24rpx;
-    border-radius: 30rpx;
-    margin-bottom: 24rpx;
-    background-color: $uni-text-color-inverse;
+.navbar {
+  background-size: cover;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  padding: 20rpx 30rpx 30rpx 30rpx;
+  background-color: $uni-bg-color;
 
-    .header {
+  .tips {
+    margin-top: 20rpx;
+    font-family: Poppins;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 42px;
+    letter-spacing: -0.3px;
+    color: $uni-text-color-inverse;
+  }
+
+  .search {
+    margin-top: 40rpx;
+    padding-bottom: 30rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .search-input {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      flex: 1;
+      padding: 20rpx;
+      letter-spacing: 0.54rpx;
+      font-size: 28rpx;
+      border-radius: 30px;
+      color: $uni-text-color-placeholder;
+      background: $uni-text-color-inverse;
+      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
-      .left {
-        display: flex;
-        align-items: center;
-
-        .years-work {
-          font-size: 26rpx;
-          line-height: 30rpx;
-          color: $uni-text-color-placeholder;
-        }
-
-        image {
-          width: 100rpx;
-          height: 100rpx;
-          border-radius: 50%;
-          margin-right: 24rpx;
-          flex-shrink: 0;
-        }
+      uni-icons {
+        margin-right: 16rpx;
       }
 
-      .right {
+      input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: $uni-text-color;
         font-size: 28rpx;
-        color: $uni-bg-color;
       }
     }
   }

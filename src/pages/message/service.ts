@@ -1,11 +1,11 @@
 import { request } from '@/utils/request'
 
 /**
- * 获取用户聊天房间
+ * 获取我的已支付订单
  */
-export const getChatRoomListService = (): Promise<any> => {
+export const getReserveOrderService = (): Promise<any> => {
   return request({
-    method: 'POST',
-    url: '/getChatRoomList',
+    method: 'GET',
+    url: '/reserve-order/list-paid',
   })
 }

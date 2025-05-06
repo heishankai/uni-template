@@ -5,9 +5,9 @@
         <info-data :info="info" />
       </template>
     </scroll-view>
-    <view class="footer">
+    <!-- <view class="footer">
       <button @click="handleDialoguePage">发送消息</button>
-    </view>
+    </view> -->
   </view>
 </template>
 
@@ -35,13 +35,13 @@ onLoad((options) => {
 })
 
 // 跳转到详情页
-const handleDialoguePage = (): void => {
-  uni.vibrateShort()
-  const { _id, nickname } = info.value ?? {}
-  uni.navigateTo({
-    url: `/copywriter-subpackage/dialogue/index?_id=${_id}&nickname=${nickname}`,
-  })
-}
+// const handleDialoguePage = (): void => {
+//   uni.vibrateShort()
+//   const { _id, nickname } = info.value ?? {}
+//   uni.navigateTo({
+//     url: `/copywriter-subpackage/dialogue/index?_id=${_id}&nickname=${nickname}`,
+//   })
+// }
 </script>
 
 <style lang="scss">
