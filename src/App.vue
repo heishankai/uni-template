@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { initSocket } from '@/utils/socket'
+import { updateApp } from '@/utils/updateApp'
 import { onLaunch, onShow, onHide, onLoad, onUnload, onReady } from '@dcloudio/uni-app'
 
 onLaunch(() => {
-  initSocket()
   console.log('监听小程序初始化，全局只触发一次')
+  /** socket 连接 */
+  initSocket()
+  /** 小程序版本更新 */
+  updateApp()
 })
 
 onShow(() => {

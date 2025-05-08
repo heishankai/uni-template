@@ -31,7 +31,7 @@ export const getLocation = async (): Promise<any> => {
       longitude: `${longitude}`,
     })
     return data?.result // 返回数据
-  } catch  {
+  } catch {
     // throw new Error(error) // 统一抛出错误
   }
 }
