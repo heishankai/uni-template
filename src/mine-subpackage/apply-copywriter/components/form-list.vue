@@ -88,6 +88,7 @@
           placeholder="请填写简介"
           v-model="profile.synopsis"
           :cursor-spacing="120"
+          confirm-type="done"
         />
       </view>
     </view>

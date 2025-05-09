@@ -1,7 +1,7 @@
 <template>
   <view class="info-data">
     <view class="header">
-      <image class="avatar" :src="info.avatar" mode="aspectFit" />
+      <image class="avatar" :src="info.avatar" mode="scaleToFill" />
     </view>
     <view class="info-body">
       <view v-if="info?.nickname">姓名：{{ info?.nickname }}</view>
