@@ -76,10 +76,9 @@ onShow(() => {
                 <uni-icons
                   v-if="userData?.avatar"
                   class="smallcircle"
-                  custom-prefix="iconfont"
-                  type="icon-laba2"
+                  type="smallcircle-filled"
                   color="#509F2C"
-                  size="28"
+                  size="26"
                 />
               </view>
             </view>
@@ -219,8 +218,8 @@ onShow(() => {
 
     .smallcircle {
       position: absolute;
-      top: 0rpx;
-      right: -33rpx;
+      top: -5rpx;
+      right: -22rpx;
       animation: blink 2.5s infinite ease-in-out;
     }
 
