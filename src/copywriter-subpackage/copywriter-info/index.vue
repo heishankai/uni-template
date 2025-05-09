@@ -5,7 +5,7 @@
         v-for="(item, index) in copywriterInfo?.resume_images"
         :key="index"
         :src="item"
-        mode="aspectFill"
+        mode="aspectFit"
         @click="previewImage(item)"
       />
     </scroll-view>
@@ -105,7 +105,6 @@ page {
   image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
   }
 }
 
