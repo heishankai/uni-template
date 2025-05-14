@@ -12,103 +12,73 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnload, onHide } from '@dcloudio/uni-app'
-import { computed, ref } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
+import { eventBus } from '@/utils/eventBus'
 
-// 定义 props
+// props
 const props = defineProps({
-  direction: {
-    type: String,
-    default: 'right',
-  },
-  size: {
-    type: Number,
-    default: 24,
-  },
-  color: {
-    type: String,
-    default: '#222',
-  },
-  src: {
-    type: String,
-    default: '',
-  },
-  time: {
-    type: String,
-    default: '',
-  },
+  direction: { type: String, default: 'right' },
+  size: { type: Number, default: 24 },
+  color: { type: String, default: '#222' },
+  src: { type: String, default: '' },
+  time: { type: String, default: '' },
 })
-const isPlay = ref<boolean>(false)
+
+const isPlay = ref(false)
 let innerAudioContext: UniApp.InnerAudioContext | null = null
 
-// 播放音频
 const play = (): void => {
-  if (!innerAudioContext) {
-    innerAudioContext = uni.createInnerAudioContext()
-
-    uni.setInnerAudioOption({
-      obeyMuteSwitch: false,
-    })
-
-    innerAudioContext.autoplay = true
-  }
-
   if (isPlay.value) {
-    // 如果正在播放，则暂停
-    innerAudioContext.stop()
+    innerAudioContext?.stop()
     isPlay.value = false
-    console.log('点击暂停播放')
     return
   }
 
-  innerAudioContext.onPlay(() => {
-    console.log('开始播放')
-    isPlay.value = true
-  })
+  eventBus.emit('stopAll') // 通知其他组件停止播放
+
+  if (!innerAudioContext) {
+    innerAudioContext = uni.createInnerAudioContext()
+    innerAudioContext.autoplay = true
+    innerAudioContext.obeyMuteSwitch = false
+  }
+
+  innerAudioContext.src = encodeURI(props.src)
+  innerAudioContext.play()
+  isPlay.value = true
 
   innerAudioContext.onEnded(() => {
-    console.log('播放完成')
     isPlay.value = false
   })
 
-  innerAudioContext.onError((res) => {
-    console.log(res.errMsg, '播放失败')
-    isPlay.value = true
+  innerAudioContext.onError(() => {
+    isPlay.value = false
   })
-
-  innerAudioContext.src = encodeURI(props?.src)
-  innerAudioContext.play()
 }
 
-onHide(() => {
-  if (innerAudioContext) {
-    innerAudioContext.pause() // 暂停当前播放
-    innerAudioContext.stop() // 停止播放
-    innerAudioContext.destroy() // 销毁音频实例
-    innerAudioContext = null // 重置引用
+eventBus.on('stopAll', () => {
+  if (isPlay.value && innerAudioContext) {
+    innerAudioContext.stop()
     isPlay.value = false
   }
 })
 
-onUnload(() => {
+onUnmounted(() => {
+  eventBus.off('stopAll')
   if (innerAudioContext) {
-    innerAudioContext.pause() // 暂停当前播放
-    innerAudioContext.stop() // 停止播放
-    innerAudioContext.destroy() // 销毁音频实例
-    innerAudioContext = null // 重置引用
-    isPlay.value = false
+    innerAudioContext.stop()
+    innerAudioContext.destroy()
+    innerAudioContext = null
   }
+  isPlay.value = false
 })
 
-// 计算属性: audioStyle
 const audioStyle = computed(() => ({
   transform: `scale(${props.size / 24})`,
 }))
 
-// 计算属性: boxStyle
 const boxStyle = computed(() => {
-  const directDic: any = { right: '0deg', bottom: '90deg', left: '180deg', top: '280deg' }
-  const dir = directDic[props.direction || 'left']
+  const directions = { right: '0deg', bottom: '90deg', left: '180deg', top: '270deg' }
+  const dir = directions[props.direction] || '0deg'
   return {
     transform: `rotate(${dir})`,
     width: `${props.size}px`,
@@ -157,14 +127,14 @@ const boxStyle = computed(() => {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  & > view {
+
+  > view {
     border: 2px solid transparent;
     border-radius: 50%;
   }
 }
 
 .small {
-  border: 0px solid;
   width: 3px;
   height: 3px;
 }
@@ -187,13 +157,11 @@ const boxStyle = computed(() => {
   .middle {
     animation: middle 1.2s ease-in-out infinite;
   }
-
   .large {
     animation: large 1.2s ease-in-out infinite;
   }
 }
 
-// 语音播放动画
 @keyframes middle {
   0% {
     opacity: 0;
