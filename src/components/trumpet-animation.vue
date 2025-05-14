@@ -39,7 +39,10 @@ const play = (): void => {
   if (!innerAudioContext) {
     innerAudioContext = uni.createInnerAudioContext()
     innerAudioContext.autoplay = true
-    innerAudioContext.obeyMuteSwitch = false
+
+    uni.setInnerAudioOption({
+      obeyMuteSwitch: false,
+    })
   }
 
   innerAudioContext.src = encodeURI(props.src)
