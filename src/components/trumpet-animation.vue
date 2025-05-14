@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onHide } from '@dcloudio/uni-app'
+import { onUnload, onHide } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 
 // 定义 props
@@ -81,6 +81,16 @@ const play = (): void => {
 }
 
 onHide(() => {
+  if (innerAudioContext) {
+    innerAudioContext.pause() // 暂停当前播放
+    innerAudioContext.stop() // 停止播放
+    innerAudioContext.destroy() // 销毁音频实例
+    innerAudioContext = null // 重置引用
+    isPlay.value = false
+  }
+})
+
+onUnload(() => {
   if (innerAudioContext) {
     innerAudioContext.pause() // 暂停当前播放
     innerAudioContext.stop() // 停止播放

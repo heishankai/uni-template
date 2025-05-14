@@ -142,6 +142,58 @@ export const useRecorder = (
   // 停止录音
   const stopRecord = (): void => {
     recorderManager.stop()
+    recorderManager.onStop((res) => {
+      // 先捕获当前的录音时间
+      const finalTime = recordingTime.value
+
+      uni.showModal({
+        content: '确认上传吗？',
+        success: async function (response) {
+          const { confirm } = response
+          if (!confirm) {
+            // 推入录音信息后再重置录音时间
+            recordingTime.value = '00:00'
+            return
+          }
+          uni.showLoading({ title: '上传中...', mask: true })
+          wx.uploadFile({
+            url: uploadFileUrl,
+            filePath: res?.tempFilePath,
+            timeout: 300000, // 设置为 5 分钟（单位：ms）
+            name: 'file',
+            async success(res) {
+              try {
+                const { data } = JSON.parse(res?.data)
+
+                const { message } = await saveRecordService({
+                  recordList: [{ src: data, time: finalTime }],
+                })
+
+                uni.showToast({ title: message, icon: 'none' })
+
+                recordList.value.push({
+                  src: data,
+                  time: finalTime,
+                })
+
+                // 推入录音信息后再重置录音时间
+                recordingTime.value = '00:00'
+              } catch {
+                uni.hideLoading()
+              } finally {
+                uni.hideLoading()
+              }
+            },
+            fail(err) {
+              console.error('上传失败:', err)
+              uni.hideLoading()
+              // 推入录音信息后再重置录音时间
+              recordingTime.value = '00:00'
+            },
+          })
+        },
+      })
+    })
     stopTimer()
   }
 
