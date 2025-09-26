@@ -13,13 +13,9 @@ export default [
   { ignores: ['dist/*', 'node_modules/*', 'build/*'] },
   {
     rules: {
-      // 'no-undef': 'off',
       'vue/multi-word-component-names': 'off',
-      // 'vue/no-setup-props-destructure': ['off'],
-      // 'vue/no-deprecated-html-element-is': ['off'],
-      // '@typescript-eslint/no-unused-vars': ['off'],
       '@typescript-eslint/explicit-function-return-type': 'error',
-      '@typescript-eslint/no-explicit-any': 'off', // 禁止使用 any
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-inferrable-types': 'error',
       '@typescript-eslint/explicit-module-boundary-types': 'error',
