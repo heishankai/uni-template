@@ -11,8 +11,8 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "讲出来",
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "首页",
+				// "navigationStyle": "custom"
 			}
 		}
 	],
