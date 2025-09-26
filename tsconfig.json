@@ -26,18 +26,19 @@
     "strictPropertyInitialization": true, // 严格的属性初始化检查
     "noImplicitThis": true, // 禁止隐式的 this 类型
     "alwaysStrict": true, // 始终启用严格模式
-
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
   "vueCompilerOptions": {
-    // Vue 3.x 默认使用 runtime-dom 模式，因此这个选项实际上是不需要的。
-    // 如果确实需要覆盖默认行为，请确保使用的Vue版本支持此选项。
-     // Vue-Official  v2.0.12 配置写法
-     "nativeTags": ["block", "component", "template", "slot"],
-
-    // Vue-Official  v2.0.14+ 配置写法(最新写法)
-    "plugins": ["@uni-helper/uni-app-types/volar-plugin"]
+    "nativeTags": [
+      "block",
+      "component",
+      "template",
+      "slot"
+    ],
+    "plugins": [
+      "@uni-helper/uni-app-types/volar-plugin"
+    ]
   },
   "include": [
     "src/**/*.ts",
@@ -45,5 +46,8 @@
     "src/**/*.tsx",
     "src/**/*.vue"
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
